@@ -1,0 +1,119 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>asbamboo 编码规范 &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="asbamboo">
+<h1>asbamboo 编码规范<a class="headerlink" href="#asbamboo" title="永久链接至标题">¶</a></h1>
+<p>asbamboo 代码规范基本参照 <a class="reference external" href="https://www.php-fig.org/psr/psr-2/">psr-2</a>, 另外存在一些特殊的规则。</p>
+<div class="section" id="id1">
+<h2>文件和目录的命名<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>文件目录以小写字母开头，只能包含小写字母、或数字、减号“-”。文件目录的字母统一小写，单词之间使用使用减号“-”相接</li>
+<li>文件名使用大写字母开头，只能包含字母或者数字。文件名的单词首字母大写，其他字母小写。文件的后缀名使用小写字母。</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>常量的命名<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>常量以大写字母开头，只能包含大写字母、或数字、下划线“_”。</li>
+<li>类常量和一般常量命名方式一样。<a class="reference internal" href="#class">类与对象（class）的命名</a></li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>变量的命名<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>一般情况下，变量以小写字母开头，只能包含小写字母、或数字、下划线“_”。（类的属性也是这样。）</li>
+<li>如果变量的值是一个对象（类的实例），那么变量名的命名方法与类的命名规则相同，并且尽量与类名一致。<a class="reference internal" href="#class">类与对象（class）的命名</a></li>
+</ol>
+</div>
+<div class="section" id="class">
+<span id="classname-rules"></span><h2>类与对象（class）的命名<a class="headerlink" href="#class" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>类的名称必须与文件名(不包含后缀)一致, 包括字母大小写也需要一致。</li>
+<li>类的方法的类似类的命名，与类的区别是方法名的第一个单词的首字母小写，方法名以小写字母开头。</li>
+<li>类的常量以大写字母开头，只能包含大写字母、或数字、下划线“_”。</li>
+<li>类的属性以小写字母开头，只能包含小写字母、或数字、下划线“_”。</li>
+<li>类的实力（对象[object])）的变量命名方法与类的命名规则相同，并且尽量与类名一致。</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, 李春寅 <licy2013@aliyun.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/code-strandard/code-strandard.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
