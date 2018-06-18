@@ -73,6 +73,32 @@
 <li>类的实力（对象[object])）的变量命名方法与类的命名规则相同，并且尽量与类名一致。</li>
 </ol>
 </div>
+<div class="section" id="id4">
+<h2>版本信息<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>每一个asbamboo模块的根目录内，都应该包含一个Version.php文件，这个文件的内容是一个Version类，该类包含3个常量VALUE（版本号），DATE（发布日期），AUTHOS（开发人员）。</p>
+<p>VALUE和DATE可以被用在其他代码库中，判断依赖的模块版本是否可以运行该代码库。AUTHORS可以被用在监控系统异常时给相模块的研发人员推送异常邮件。</p>
+<p>Version.php示例:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Version</span>
+<span class="p">{</span>
+    <span class="o">/*</span>
+     <span class="o">*</span> <span class="n">版本号</span>
+     <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">VALUE</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">;</span>
+
+    <span class="o">/*</span>
+     <span class="o">*</span> <span class="n">版本完成日期</span>
+     <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">DATE</span> <span class="o">=</span> <span class="s1">&#39;2018.02.03&#39;</span><span class="p">;</span>
+
+    <span class="o">/*</span>
+     <span class="o">*</span> <span class="n">版本研发人员</span>
+     <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">AUTHOS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;李春寅 &lt;licy2013@aliyun.com&gt;&#39;</span><span class="p">];</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 

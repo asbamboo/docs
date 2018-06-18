@@ -3,14 +3,30 @@
 asbamboo 说明文档 
 ====================================
 
-.. toctree::
-   :maxdepth: 1
-   :caption: 编码规范:
-   
-   code-strandard/index
+:doc:`编码规范 <code-strandard/index>`
+-----------------------------------------
 
-Indices and tables
-==================
+.. toctree::
+   :hidden:
+   
+   code-strandard/index   
+
+模块
+--------------------------------
+
+:doc:`自动加载[Autoload] <autoload/autoload>`
+
+.. toctree::
+   :hidden:
+   
+   autoload/autoload
+
+
+
+
+
+索引
+-------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
