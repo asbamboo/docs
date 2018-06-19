@@ -1,8 +1,7 @@
 .. asbamboo
 
-asbamboo 说明文档 
-====================================
-
+asbamboo
+==========
 :doc:`编码规范 <code-strandard/index>`
 -----------------------------------------
 
@@ -14,12 +13,12 @@ asbamboo 说明文档
 模块
 --------------------------------
 
-:doc:`自动加载[Autoload] <autoload/autoload>`
+:doc:`自动加载[Autoload] <autoload/index>`
 
 .. toctree::
    :hidden:
    
-   autoload/autoload
+   autoload/index
 
 
 
