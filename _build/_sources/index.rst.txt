@@ -6,19 +6,22 @@ asbamboo
 -----------------------------------------
 
 .. toctree::
-   :hidden:
+    :hidden:
    
-   code-strandard/index   
+    code-strandard/index   
 
 模块
 --------------------------------
 
 :doc:`自动加载[Autoload] <autoload/index>`
 
+:doc:`测试[Test] <test/index>`
+
 .. toctree::
-   :hidden:
-   
-   autoload/index
+    :hidden:
+
+    autoload/index
+    test/index
 
 
 
