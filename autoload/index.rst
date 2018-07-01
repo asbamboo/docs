@@ -3,7 +3,7 @@
 autoload自动加载器
 =====================
 
-autoload是实现通过psr-4命名规则自动加载类的工具。
+autoload是实现通过 `psr-4`_ 命名规则自动加载类的工具。
 
 
 如何安装？
@@ -46,3 +46,4 @@ autoload是实现通过psr-4命名规则自动加载类的工具。
 
 
 .. _composer: https://getcomposer.org/
+.. _psr-4: https://www.php-fig.org/psr/psr-4/
