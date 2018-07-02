@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/translations.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="prev" title="asbamboo 说明文档" href="../index.html" />
+    <link rel="next" title="autoload自动加载器" href="../autoload/index.html" />
+    <link rel="prev" title="asbamboo" href="../index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -74,7 +75,31 @@
 </ol>
 </div>
 <div class="section" id="id4">
-<h2>版本信息<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<h2>注释<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">注释分成3个级别，分别使用 以下三种注释表示:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">一级注释</span>
+ <span class="o">*/</span>
+
+<span class="o">/*</span>
+ <span class="o">*</span> <span class="n">二级注释</span>
+ <span class="o">*/</span>
+
+<span class="o">//</span><span class="n">三级级注释</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">function（包括class内的function）之外的注释都使用一级注释。</p>
+</li>
+<li><p class="first">function（包括class内的function）之内带有“&#64;”注释的注释使用一级注释。</p>
+</li>
+<li><p class="first">三级注释内不能包含二级注释或者一级注释，二级注释不能包含一级注释。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id5">
+<h2>版本信息<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
 <p>每一个asbamboo模块的根目录内，都应该包含一个Version.php文件，这个文件的内容是一个Version类，该类包含3个常量VALUE（版本号），DATE（发布日期），AUTHOS（开发人员）。</p>
 <p>VALUE和DATE可以被用在其他代码库中，判断依赖的模块版本是否可以运行该代码库。AUTHORS可以被用在监控系统异常时给相模块的研发人员推送异常邮件。</p>
 <p>Version.php示例:</p>
@@ -110,7 +135,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../index.html" title="上一章">asbamboo 说明文档</a></li>
+      <li>Previous: <a href="../index.html" title="上一章">asbamboo</a></li>
+      <li>Next: <a href="../autoload/index.html" title="下一章">autoload自动加载器</a></li>
   </ul></li>
 </ul>
 </div>
