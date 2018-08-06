@@ -1,0 +1,25 @@
+helper 助手模块
+=================
+
+helper 模块的作用是提供一些公共的通用的方法、类等代码片段。其他模块开发时可以调用helper模块中的代码块
+
+如何安装？
+-------------------------
+
+#. 通过 `composer`_ 安装::
+
+    composer require asbamboo/helper
+    
+#. 从 https://github.com/asbamboo/helper 获取。
+
+如何使用？
+-------------------------
+
+:doc:`单例模式的公共trait <traits/singleton-class-trait>`
+
+.. toctree::
+    :hidden:
+
+    traits/singleton-class-trait
+    
+.. _composer: https://getcomposer.org/

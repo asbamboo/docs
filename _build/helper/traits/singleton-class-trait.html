@@ -1,0 +1,143 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>单例模式的公共trait &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="prev" title="helper 助手模块" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="trait">
+<h1>单例模式的公共trait<a class="headerlink" href="#trait" title="永久链接至标题">¶</a></h1>
+<p>类名：asbamboo\helper\traits\SingletonClassTrait</p>
+<p>是为了后来使用单例模式开发时，不要每次重复定义那几个基本的方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>namespace asbamboo\helper\traits;
+
+trait SingletonClassTrait
+{
+    /**
+     * 类的实例
+     * @var object
+     */
+    protected static $instance;
+
+    /**
+     * 使类不能被初始化
+     */
+    protected function __construct(){}
+
+    /**
+     * 创建并获取类的实例
+     * @return object
+     */
+    public static function instance() : object
+    {
+        if(! static::$instance){
+            static::$instance    = new static();
+        }
+        return static::$instance;
+    }
+
+    /**
+     * 不允许将类的实例序列化后存储
+     */
+    final private function __sleep(){}
+
+    /**
+     * 不允许将类的实例的序列化值反序列化
+     */
+    final private function __wakeup(){}
+
+    /**
+     * 不允许复制类的实例
+     */
+    final private function __clone(){}
+}
+</pre></div>
+</div>
+<p>如何使用(ex)？:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">namespace</span> <span class="n">demo</span><span class="p">;</span>
+
+<span class="n">use</span> <span class="n">asbamboo</span>\<span class="n">helper</span>\<span class="n">traits</span>\<span class="n">SingletonClassTrait</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Demo</span>
+<span class="p">{</span>
+    <span class="n">use</span> <span class="n">SingletonClassTrait</span><span class="p">;</span>
+    <span class="o">....</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">helper 助手模块</a><ul>
+      <li>Previous: <a href="../index.html" title="上一章">helper 助手模块</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, 李春寅 <licy2013@aliyun.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/helper/traits/singleton-class-trait.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

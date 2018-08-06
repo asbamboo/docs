@@ -17,11 +17,14 @@ asbamboo
 
 :doc:`测试[Test] <test/index>`
 
+:doc:`助手[Helper] <helper/index>`
+
 .. toctree::
     :hidden:
 
     autoload/index
     test/index
+    helper/index
 
 
 
