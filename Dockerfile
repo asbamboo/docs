@@ -2,7 +2,7 @@ FROM asbamboo/nginx:1.0.0
 
 WORKDIR /html
 
-ADD ./_build /html
+ADD ./_build /html/_build
 
 COPY nginx.conf /html/asbamboo.nginx.conf
 
