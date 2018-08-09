@@ -15,16 +15,20 @@ asbamboo
 
 :doc:`自动加载[Autoload] <autoload/index>`
 
+:doc:`助手[Helper] <helper/index>`
+
+:doc:`事件调度[Event] <event/index>`
+
 :doc:`测试[Test] <test/index>`
 
-:doc:`助手[Helper] <helper/index>`
 
 .. toctree::
     :hidden:
 
     autoload/index
-    test/index
     helper/index
+    event/index
+    test/index
 
 
 
