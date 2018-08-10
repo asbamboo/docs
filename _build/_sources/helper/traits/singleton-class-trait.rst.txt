@@ -1,5 +1,5 @@
 单例模式的公共trait
-=================
+=====================
 
 类名：asbamboo\\helper\\traits\\SingletonClassTrait
 

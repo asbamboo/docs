@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>事件调度模块[Event] &#8212; asbamboo  文档</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -21,10 +29,10 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
-  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -39,8 +47,8 @@
 <div class="section" id="id1">
 <h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
-<li><p class="first">通过 <a href="#id3"><span class="problematic" id="id4">`composer`_</span></a> 安装:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">event</span>
+<li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">event</span>
 </pre></div>
 </div>
 </li>
@@ -52,7 +60,7 @@
 <h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">假设有一段用户注册代码:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">namespace</span> <span class="n">app</span><span class="p">;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">namespace</span> <span class="n">app</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">user</span>
 <span class="p">{</span>
@@ -65,7 +73,7 @@
 </div>
 </li>
 <li><p class="first">为了以后功能扩展我们为这段代码添加事件调度:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>namespace app;
+<div class="highlight-default"><div class="highlight"><pre><span></span>namespace app;
 
 use asbamboo\event\EventScheduler;
 
@@ -85,14 +93,14 @@ class user
 </div>
 </li>
 <li><p class="first">创建了user.register.success事件触发器，以后用户注册成功需要做的功能扩展时，只需要绑定一个事件处理方法:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>EventScheduler::instance()-&gt;bind(&#39;user.register.success&#39;, function(object $user ){
+<div class="highlight-default"><div class="highlight"><pre><span></span>EventScheduler::instance()-&gt;bind(&#39;user.register.success&#39;, function(object $user ){
     ... // 假设我们这次添加了用户注册成功时，发送优惠券的功能。
 });
 </pre></div>
 </div>
 </li>
 <li><p class="first">除了绑定function外，还可以绑定[object, method], 假如上一步的function处理代码是下面的sendByUserRegister方法:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>namespace app\event;
+<div class="highlight-default"><div class="highlight"><pre><span></span>namespace app\event;
 
 class coupon
 {
@@ -108,20 +116,93 @@ EventScheduler::instance()-&gt;bind(&#39;user.register.success&#39;, [new app\ev
 </pre></div>
 </div>
 </li>
-<li><p class="first">使用说明</p>
-</li>
 </ol>
+</div>
+<div class="section" id="id3">
+<h2>绑定事件处理代码的优先级<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>EventScheduler::instance()-&gt;bind 方法还有第三个参数，是int类型，表示绑定后执行顺序的优先级，数字大的方法优先执行。如果方法执行后返回false。那将跳出事件处理，不再执行其他事件</p>
+</div>
+<div class="section" id="on">
+<h2>使用on简写事件绑定与事件触发<a class="headerlink" href="#on" title="永久链接至标题">¶</a></h2>
+<dl class="docutils">
+<dt>之前说明的bind和trigger方法，可以使用on方法代替。</dt>
+<dd><ol class="first last arabic simple">
+<li>on方法的第一个参数是事件名称。</li>
+<li>如果on方法的第二个参数，is_callable判断等于true，那么等同于调用bind方法。这时如果还有第三个参数，那么第三个参数应该是INT类型，表示优先级。</li>
+<li>如果on方法的第二个参数，is_callable判断等于false, 那么等同于调用trigger方法，其他参数将在事件触发时传给bind的方法。</li>
+</ol>
+</dd>
+</dl>
+<p>例:</p>
 <blockquote>
-<div><ol class="arabic simple">
-<li>事件绑定。
-1. 绑定function
-2. 绑定class::method</li>
-<li>事件触发</li>
-<li>优先级说明</li>
-<li>使用on简写</li>
-<li>使用eventListener注册事件监听器</li>
-</ol>
-</div></blockquote>
+<div>用于注册方法中trigger修改为on：</div></blockquote>
+<div class="highlight-default"><div class="highlight"><pre><span></span>namespace app;
+
+use asbamboo\event\EventScheduler;
+
+class user
+{
+    public function register()
+    {
+        /**
+         * @var object $user 注册成功后的用户
+         */
+        .... //用户注册功能的代码
+
+        EventScheduler::instance()-&gt;on(&#39;user.register.success&#39;, $user);
+    }
+}
+
+bind方法修改为on：
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span>namespace app\event;
+
+    class coupon
+    {
+        public function sendByUserRegister(object $user)
+        {
+            .... 发送优惠券的功能。
+        }
+    }
+
+    // 这时可以把事件绑定写成::
+
+    EventScheduler::instance()-&gt;on(&#39;user.register.success&#39;, [new app\event\&#39;coupon&#39;, &#39;sendByUserRegister&#39;], 0); // 0表示执行的优先级
+</pre></div>
+</div>
+</div>
+<div class="section" id="eventlistener">
+<h2>使用EventListener注册事件监听器<a class="headerlink" href="#eventlistener" title="永久链接至标题">¶</a></h2>
+<p>之前使用的EventScheduler::bind方法绑定的可调用的对象，必须先将类实例化成一个对象，然后作为参数使用bind方法。即使后面的代码中没有触发这个事件，这些类也需要实例化对象。</p>
+<p>如果使用了EventListener::set方法，那么这些需要bind的对象方法，只有受到EventScheduler::trigger触发时才会生成新的实例，这样可以减少内存占用。</p>
+<p>我们现在将之前的bind修改为，使用EventListener::set:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>namespace app\event;
+
+class coupon
+{
+    private $db;
+
+    public __construct($db)
+    {
+        $this-&gt;db   = $db;
+    }
+
+    public function sendByUserRegister(object $user)
+    {
+        .... 发送优惠券的功能。
+    }
+}
+</pre></div>
+</div>
+<p>使用EventListener::set:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>// 第一个参数是事件名称
+// 第二个参数是方法名称
+// 第三个参数是类实例化时，__construct方法接收的参数
+// 第四个参数等同于bind方法的优先级
+EventListener::instance()-&gt;set(&#39;test.event.register&#39;, app\event\coupon&#39;, &#39;sendByUserRegister&#39;, [$db], 0);
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -141,14 +222,12 @@ EventScheduler::instance()-&gt;bind(&#39;user.register.success&#39;, [new app\ev
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="转向" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -159,8 +238,8 @@ EventScheduler::instance()-&gt;bind(&#39;user.register.success&#39;, [new app\ev
       &copy;2018, 李春寅 <licy2013@aliyun.com>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/event/index.rst.txt"
