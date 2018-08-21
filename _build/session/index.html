@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>helper 助手模块 &#8212; asbamboo  文档</title>
+    <title>SESSION模块[Session] &#8212; asbamboo  文档</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -16,8 +16,8 @@
     <script type="text/javascript" src="../_static/translations.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="单例模式的公共trait" href="traits/singleton-class-trait.html" />
-    <link rel="prev" title="autoload自动加载器" href="../autoload/index.html" />
+    <link rel="next" title="Session PdoHandler" href="handler/pdo-handler.html" />
+    <link rel="prev" title="事件调度模块[Event]" href="../event/index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -32,24 +32,54 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="helper">
-<h1>helper 助手模块<a class="headerlink" href="#helper" title="永久链接至标题">¶</a></h1>
-<p>helper 模块的作用是提供一些公共的通用的方法、类等代码片段。其他模块开发时可以调用helper模块中的代码块</p>
+  <div class="section" id="session-session">
+<h1>SESSION模块[Session]<a class="headerlink" href="#session-session" title="永久链接至标题">¶</a></h1>
+<p>SESSION模块的作用主要，管理自定义的session handler。规范统一asbamboo项目中，session相关的代码处理方式。</p>
 <div class="section" id="id1">
 <h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">helper</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">session</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/helper">https://github.com/asbamboo/helper</a> 获取。</p>
+<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/session">https://github.com/asbamboo/session</a> 获取。</p>
 </li>
 </ol>
 </div>
 <div class="section" id="id2">
 <h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
-<p><a class="reference internal" href="traits/singleton-class-trait.html"><span class="doc">单例模式的公共trait</span></a></p>
+<ol class="arabic">
+<li><p class="first">基本的使用方式</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$session = new Session(); // 新的session实例
+$session-&gt;start(); // 同session_start();
+$session-&gt;set(&#39;session_key&#39;, &#39;session_value&#39;); // $_SESSION[&#39;session_key&#39;] = &#39;session_value&#39;;
+$session-&gt;get(&#39;session_key&#39;); // $_SESSION[&#39;session_key&#39;]
+$session-&gt;save(); // session_write_close();
+$session-&gt;unset(); // unset($_SESSION);
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><dl class="first docutils">
+<dt>使用session handler</dt>
+<dd><p class="first">自定义的session handler需要实现 asbamboosessionhandlerSessionHandlerInterface, 可以参考asbamboosessionhandlerPdoHandler. （请参阅 <a class="reference external" href="http://php.net/manual/zh/class.sessionhandler.php">http://php.net/manual/zh/class.sessionhandler.php</a> )</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>$dsn        = &#39;mysql:host=127.0.0.1;dbname=asbamboo_test&#39;;
+$username   = &#39;root&#39;;
+$password   = &#39;root&#39;;
+$PdoHandler = new asbamboo\session\handler\PdoHandler($dsn, $username, $password);
+$session    = new Session($PdoHandler); // 新的session实例
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+<div class="section" id="handler">
+<h2>Handler<a class="headerlink" href="#handler" title="永久链接至标题">¶</a></h2>
+<p><a class="reference internal" href="handler/pdo-handler.html"><span class="doc">PdoHandler</span></a></p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -64,8 +94,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../autoload/index.html" title="上一章">autoload自动加载器</a></li>
-      <li>Next: <a href="traits/singleton-class-trait.html" title="下一章">单例模式的公共trait</a></li>
+      <li>Previous: <a href="../event/index.html" title="上一章">事件调度模块[Event]</a></li>
+      <li>Next: <a href="handler/pdo-handler.html" title="下一章">Session PdoHandler</a></li>
   </ul></li>
 </ul>
 </div>
@@ -93,7 +123,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../_sources/helper/index.rst.txt"
+      <a href="../_sources/session/index.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

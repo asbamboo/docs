@@ -19,6 +19,8 @@ asbamboo
 
 :doc:`事件调度[Event] <event/index>`
 
+:doc:`SESSION[Session] <session/index>`
+
 :doc:`控制台组件[Console] <console/index>`
 
 :doc:`测试[Test] <test/index>`
@@ -30,6 +32,7 @@ asbamboo
     autoload/index
     helper/index
     event/index
+    session/index
     console/index
     test/index
 
