@@ -21,6 +21,8 @@ asbamboo
 
 :doc:`SESSION[Session] <session/index>`
 
+:doc:`安全[Security] <security/index>`
+
 :doc:`控制台组件[Console] <console/index>`
 
 :doc:`测试[Test] <test/index>`

@@ -1,0 +1,227 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户登录与登出 &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>用户登录与登出<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<div class="section" id="asbamboo-security-user-userinterface">
+<h2>实现asbamboo\security\user\UserInterface的类<a class="headerlink" href="#asbamboo-security-user-userinterface" title="永久链接至标题">¶</a></h2>
+<p>一个实现UserInterface的实例化对象表示，发起当前请求的用户。</p>
+<dl class="docutils">
+<dt>security模块中内置两个实现了接口UserInterface的类：</dt>
+<dd><ol class="first last arabic simple">
+<li>asbamboo\security\user\AnonymousUser, 表示未登录状态下的用户</li>
+<li>asbamboo\security\user\BaseUser, 标准用户类</li>
+</ol>
+</dd>
+</dl>
+<p>您可以参考asbamboo\security\user\BaseUser自定义实现UserInterface的类。</p>
+</div>
+<div class="section" id="asbamboo-security-user-provider-userproviderinterface">
+<h2>实现asbamboo\security\user\provider\UserProviderInterface的类<a class="headerlink" href="#asbamboo-security-user-provider-userproviderinterface" title="永久链接至标题">¶</a></h2>
+<p>实现UserProviderInterface的类用于用户登录时，通过loadByLoginName方法，使用登录的名获取一个实现UserInterface接口的对象。如果没有找到与客户端登录名相关的实现UserInterface的对象,那么loadByloginName应该返回null</p>
+<dl class="docutils">
+<dt>security模块中内置asbamboo\security\user\provider\MemoryUserProvider。</dt>
+<dd><ol class="first last arabic simple">
+<li>MemoryUserProvider是在程序运行时，访问系统的用户都存储在内存中。</li>
+<li>MemoryUserProvider的私有成员变量$users，存储所有用户列表。</li>
+<li>MemoryUserProvider的addUser方法用来像添加一个用户信息到变量$users</li>
+<li>MemoryUserProvider的loadByLoginName方法从变量$users查询并返回一个实现UserInterface的对象或者null。</li>
+</ol>
+</dd>
+</dl>
+<p>如果你的用户信息存储于数据库中，你应该自定义一个实现了UserProviderInterface的类。loadByLoginName方法中处理从数据库中查询用户信息。</p>
+</div>
+<div class="section" id="asbamboo-security-user-token-usertokeninterface">
+<h2>实现asbamboo\security\user\token\UserTokenInterface的类<a class="headerlink" href="#asbamboo-security-user-token-usertokeninterface" title="永久链接至标题">¶</a></h2>
+<p>程序运行时通过实现UserTokenInterface的类，获取发起当前请求的用户信息。应该在切换用户的登录信息时调用该类的setUser方法，在需要获取当前用户信息时调用getUser方法。</p>
+<dl class="docutils">
+<dt>security模块中内置asbamboo\security\user\token\UserToken。</dt>
+<dd><ol class="first last arabic simple">
+<li>UserToken的setUser方法用户用户登录时，将用户信息写入session。</li>
+<li>在用户已登录的情况下getUser方法将返回上一次setUser传入的值。</li>
+<li>在用户未登录的情况下getUser方法将返回一个asbamboo\security\user\AnonymousUser实例.</li>
+</ol>
+</dd>
+</dl>
+<p>您可以参考asbamboo\security\user\token\UserToken自定义实现UserTokenInterface的类。</p>
+</div>
+<div class="section" id="id2">
+<h2>现在可以实现用户的登录、登出功能了<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">用户登录asbamboo\security\user\login\BaseUserLogin示例</p>
+<blockquote>
+<div><p>客户端HTML代码</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;...&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;login_name&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入登录名&quot;</span> <span class="o">/&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;login_password&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入密码&quot;</span> <span class="o">/&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>服务端PHP代码</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\session\Session;
+use asbamboo\http\ServerRequest;
+use asbamboo\security\user\provider\MemoryUserProvider;
+use asbamboo\security\user\token\UserToken;
+use asbamboo\security\user\login\BaseLogin;
+
+/*
+ * 可以登录的用户
+ */
+$MemoryUserProvider = new MemoryUserProvider();
+$MemoryUserProvider-&gt;addUser(&#39;user1&#39;, &#39;password1&#39;);
+$MemoryUserProvider-&gt;addUser(&#39;user2&#39;, &#39;password2&#39;);
+
+/*
+ * userToken用于获取当前用户信息
+ */
+$Session    = new Session();
+$UserToken  = new UserToken($Session);
+
+/*
+ * 登录
+ */
+ $Request   = new ServerRequest();
+ $BaseLogin = new BaseLogin($MemoryUserProvider, $UserToken);
+ try{
+    $BaseLogin-&gt;handler($Request);
+    echo &#39;登录成功&#39;;
+ }catch(UserNotExistsException $e){
+    echo &#39;用户不存在&#39;;
+ }catch(NotEqualPasswordException $e){
+    echo &#39;密码错误&#39;;
+ }catch(Exception $e){
+    echo &#39;系统故障。&#39;;
+ }
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">退出登录asbamboo\security\user\login\BaseUserLogin示例</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\session\Session;
+use asbamboo\http\ServerRequest;
+use asbamboo\security\user\token\UserToken;
+use asbamboo\security\user\login\BaseLogout;
+
+/*
+ * userToken用于获取当前用户信息
+ */
+$Session    = new Session();
+$UserToken  = new UserToken($Session);
+
+/*
+ * 登录
+ */
+ $Request   = new ServerRequest();
+ $BaseLogin = new BaseLogout($UserToken);
+ try{
+    $BaseLogin-&gt;handler($Request);
+    echo &#39;已退出登录&#39;;
+ }catch(Exception $e){
+    echo &#39;系统故障。&#39;;
+ }
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>用户登录、登出事件<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<dl class="docutils">
+<dt>当用户登录或者登出成功时将触发相关的事件:</dt>
+<dd><blockquote class="first">
+<div><ol class="arabic simple">
+<li>security.user.login.success 用户登录成功时触发</li>
+<li>security.user.logout.success 用户退出登录成功时触发</li>
+</ol>
+</div></blockquote>
+<p class="last"><a class="reference internal" href="../../event/index.html"><span class="doc">点击查看事件的使用</span></a></p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, 李春寅 <licy2013@aliyun.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/security/user/login.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
