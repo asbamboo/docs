@@ -21,6 +21,8 @@ asbamboo
 
 :doc:`SESSION[Session] <session/index>`
 
+:doc:`HTTP[http] <http/index>`
+
 :doc:`安全[Security] <security/index>`
 
 :doc:`控制台组件[Console] <console/index>`
