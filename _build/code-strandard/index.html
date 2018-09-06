@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>asbamboo 编码规范 &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="autoload自动加载器" href="../autoload/index.html" />
+    <link rel="prev" title="asbamboo" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="asbamboo">
+<h1>asbamboo 编码规范<a class="headerlink" href="#asbamboo" title="永久链接至标题">¶</a></h1>
+<p>asbamboo 代码规范基本参照 <a class="reference external" href="https://www.php-fig.org/psr/psr-2/">psr-2</a>, 另外存在一些特殊的规则。</p>
+<div class="section" id="id1">
+<h2>文件和目录的命名<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>文件目录以小写字母开头，只能包含小写字母、或数字、减号“-”。文件目录的字母统一小写，单词之间使用使用减号“-”相接</li>
+<li>文件名使用大写字母开头，只能包含字母或者数字。文件名的单词首字母大写，其他字母小写。文件的后缀名使用小写字母。</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>常量的命名<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>常量以大写字母开头，只能包含大写字母、或数字、下划线“_”。</li>
+<li>类常量和一般常量命名方式一样。<a class="reference internal" href="#class">类与对象（class）的命名</a></li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>变量的命名<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>一般情况下，变量以小写字母开头，只能包含小写字母、或数字、下划线“_”。（类的属性也是这样。）</li>
+<li>如果变量的值是一个对象（类的实例），那么变量名的命名方法与类的命名规则相同，并且尽量与类名一致。<a class="reference internal" href="#class">类与对象（class）的命名</a></li>
+</ol>
+</div>
+<div class="section" id="class">
+<span id="classname-rules"></span><h2>类与对象（class）的命名<a class="headerlink" href="#class" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>类的名称必须与文件名(不包含后缀)一致, 包括字母大小写也需要一致。</li>
+<li>类的方法的类似类的命名，与类的区别是方法名的第一个单词的首字母小写，方法名以小写字母开头。</li>
+<li>类的常量以大写字母开头，只能包含大写字母、或数字、下划线“_”。</li>
+<li>类的属性以小写字母开头，只能包含小写字母、或数字、下划线“_”。</li>
+<li>类的实力（对象[object])）的变量命名方法与类的命名规则相同，并且尽量与类名一致。</li>
+</ol>
+</div>
+<div class="section" id="id4">
+<h2>注释<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">注释分成3个级别，分别使用 以下三种注释表示:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">一级注释</span>
+ <span class="o">*/</span>
+
+<span class="o">/*</span>
+ <span class="o">*</span> <span class="n">二级注释</span>
+ <span class="o">*/</span>
+
+<span class="o">//</span><span class="n">三级级注释</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">function（包括class内的function）之外的注释都使用一级注释。</p>
+</li>
+<li><p class="first">function（包括class内的function）之内带有“&#64;”注释的注释使用一级注释。</p>
+</li>
+<li><p class="first">三级注释内不能包含二级注释或者一级注释，二级注释不能包含一级注释。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id5">
+<h2>版本信息<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>每一个asbamboo模块的根目录内，都应该包含一个Version.php文件，这个文件的内容是一个Version类，该类包含3个常量VALUE（版本号），DATE（发布日期），AUTHOS（开发人员）。</p>
+<p>VALUE和DATE可以被用在其他代码库中，判断依赖的模块版本是否可以运行该代码库。AUTHORS可以被用在监控系统异常时给相模块的研发人员推送异常邮件。</p>
+<p>Version.php示例:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Version</span>
+<span class="p">{</span>
+    <span class="o">/*</span>
+     <span class="o">*</span> <span class="n">版本号</span>
+     <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">VALUE</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">;</span>
+
+    <span class="o">/*</span>
+     <span class="o">*</span> <span class="n">版本完成日期</span>
+     <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">DATE</span> <span class="o">=</span> <span class="s1">&#39;2018.02.03&#39;</span><span class="p">;</span>
+
+    <span class="o">/*</span>
+     <span class="o">*</span> <span class="n">版本研发人员</span>
+     <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">AUTHOS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;李春寅 &lt;licy2013@aliyun.com&gt;&#39;</span><span class="p">];</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="上一章">asbamboo</a></li>
+      <li>Next: <a href="../autoload/index.html" title="下一章">autoload自动加载器</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, 李春寅 <licy2013@aliyun.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/code-strandard/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

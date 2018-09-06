@@ -1,0 +1,280 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>控制台组件[Console] &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="测试[test]" href="../test/index.html" />
+    <link rel="prev" title="事件调度模块[Event]" href="../event/index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="console">
+<h1>控制台组件[Console]<a class="headerlink" href="#console" title="永久链接至标题">¶</a></h1>
+<p>控制台组件用于创建命令行程序。命令行程序可以用来处理任何经常发生的任务，如crontab定时任务，或者其他的批量操作。</p>
+<div class="section" id="id1">
+<h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">console</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/console">https://github.com/asbamboo/console</a> 获取。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">创建命令行工具（假设文件名为./bin/console）</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/usr/bin/env php
+&lt;?php
+
+use asbamboo\console\Processor;
+
+require_once __DIR__ . &#39;/vendor/autoload.php&#39;;
+
+new asbamboo\autoload\Autoload();
+
+$Processor  = new Processor();
+$Processor-&gt;exec();
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><dl class="first docutils">
+<dt>创建命令行程序</dt>
+<dd><ol class="first last arabic">
+<li><dl class="first docutils">
+<dt>添加一个类，必须是asbamboo\console\command\CommandInterface的实例，可以使用抽象类asbamboo\console\command， 例如系统内置的命令行程序asbamboo:console:lists</dt>
+<dd><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span>namespace asbamboo\console\command;
+
+use asbamboo\console\ProcessorInterface;
+use asbamboo\console\Constant;
+
+/**
+ * 列出所有命令行程序
+ *
+ * @author 李春寅 &lt;licy2013@aliyun.com&gt;
+ * @since 2018年7月31日
+ */
+class ListsCommand extends CommandAbstract
+{
+    /**
+     * 命令行程序被执行时的入口方法
+     */
+    public function exec(ProcessorInterface $Processor)
+    {
+        ...
+    }
+
+    /**
+     * 命令行程序简单描述，在列出所有命令行程序的列表中会显示这个方法的返回值
+     */
+    public function desc() : string
+    {
+        ...
+    }
+
+    /**
+     * 命令行程序的帮助信息。使用选项 --help 可以查看帮助信息
+     */
+    public function help() : string
+    {
+        ...
+    }
+}
+</pre></div>
+</div>
+<p>除了上面ListsCommand列出的三个方法意外，命令行程序CommandInterface还有其他两个必须的方法</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">options 方法，返回命令行程序的所有选项。如运行下面的命令行程序，其中”–help”就是选项:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">arguments 方法, 返回命令行程序的所有参数。如运行下面的命令行程序，其中”asbamboo:console:lists”就是参数:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">help</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>如果使用抽象方法CommandAbstract，那么:</p>
+<blockquote class="last">
+<div><ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>可以通过AddOption添加设置，命令行程序的可选的选项。该方法按顺序有几下几个参数：</dt>
+<dd><ol class="first last arabic">
+<li>$name 选项名称，必须，通过 –{$name} 使用</li>
+<li>$default_value, 默认值，可选。</li>
+<li>$desc, 可选，选项的描述信息</li>
+<li>$short_name, 选项简称，可选，通常是一个字母，通过 -{$n} 使用</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>可以通过getOptionValueByProcessor获取用户输入的选项信息，该方法按顺序有几下几个参数：</dt>
+<dd><ol class="first last arabic">
+<li>$option_name 选项的名称，如果用户没输入选项，返回null。如果用户输入了选项，默认值是true。</li>
+<li>$Processor asbambooconsoleProcessor的实例。</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>可以通过addArgument添加设置，命令行程序的参数。该方法按顺序有几下几个参数：</dt>
+<dd><ol class="first last arabic">
+<li>$name 参数名称， 必须。</li>
+<li>$desc 用于帮助信息的参数说明，必须。</li>
+<li>$default_value 默认值， 可选。</li>
+<li>$position 在所有参数中位于第几个（从0开始）可选。默认自动增加。</li>
+<li>$is_require说明该参数是否必须</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>可以通过getArgumentValueByProcessor获取用户输入的参数信息，该方法按顺序有几下几个参数：</dt>
+<dd><ol class="first last arabic">
+<li>$argument_name 参数的名称。</li>
+<li>$Processor asbambooconsoleProcessor的实例。</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><p class="first">将这个新的命令行程序, 注册到控制台模块的处理器:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>...
+$Processor  = new Processor();
+$Processor-&gt;commandCollection()-&gt;add(&#39;asbamboo:console:lists&#39;, &#39;asbamboo\console\command\ListsCommand&#39;); //第一个参数是命令行程序名称，第二个参数是命令行程序运行的类名。
+$Processor-&gt;exec();
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>使用命令行程序</dt>
+<dd><ol class="first arabic simple">
+<li>命令行工具（可执行文件） 命令行程序名称 命令行程序的各个参数 命令行程序的各个选项。如：</li>
+</ol>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
+<span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">-</span><span class="n">h</span>
+<span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">help</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">-</span><span class="n">q</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>命令行程序内获取用户输入信息</dt>
+<dd><ol class="first last arabic simple">
+<li>命令行程序的入口方法是exec方法，该方法接收$Processor变量。</li>
+<li><dl class="first docutils">
+<dt>$Processor-&gt;input()获取用户的输入信息。</dt>
+<dd><ol class="first last arabic">
+<li>$Processor-&gt;input()-&gt;options() 获取用户输入的选项信息。</li>
+<li>$Processor-&gt;input()-&gt;arguments() 获取用户输入的参数信息。</li>
+<li>$Processor-&gt;input()-&gt;shortOptions() 获取用户输入的简短选项信息。</li>
+<li>$Processor-&gt;input()-&gt;prompt($title) 与用户交互，提示用户输入信息。$title告诉用户输入的信息标题。</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p class="first">用户交互输出</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../event/index.html" title="上一章">事件调度模块[Event]</a></li>
+      <li>Next: <a href="../test/index.html" title="下一章">测试[test]</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, 李春寅 <licy2013@aliyun.com>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/console/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
