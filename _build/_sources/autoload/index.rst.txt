@@ -18,8 +18,12 @@ autoload是实现通过 `psr-4`_ 命名规则自动加载类的工具。
 如何使用？
 -------------------------
 
-#. 假如有个文件__DIR__/modal/demo-entity/DemoEntity.php::
+#. 假如有个文件__DIR__/modal/demo-entity/DemoEntity.php
 
+::
+
+    namespace modal/demoEntity;
+    
     class DemoEntity
     {
         ....

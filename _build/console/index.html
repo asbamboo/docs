@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>控制台组件[Console] &#8212; asbamboo  文档</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -17,15 +25,44 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
     <link rel="next" title="测试[test]" href="../test/index.html" />
-    <link rel="prev" title="事件调度模块[Event]" href="../event/index.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
+    <link rel="prev" title="Session PdoHandler" href="../session/handler/pdo-handler.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../test/index.html" title="测试[test]"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../session/handler/pdo-handler.html" title="Session PdoHandler"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="../session/handler/pdo-handler.html"
+                        title="上一章">Session PdoHandler</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../test/index.html"
+                        title="下一章">测试[test]</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -39,7 +76,7 @@
 <h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">console</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">console</span>
 </pre></div>
 </div>
 </li>
@@ -52,7 +89,7 @@
 <ol class="arabic">
 <li><p class="first">创建命令行工具（假设文件名为./bin/console）</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/usr/bin/env php
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>#!/usr/bin/env php
 &lt;?php
 
 use asbamboo\console\Processor;
@@ -72,7 +109,7 @@ $Processor-&gt;exec();
 <dd><ol class="first last arabic">
 <li><dl class="first docutils">
 <dt>添加一个类，必须是asbamboo\console\command\CommandInterface的实例，可以使用抽象类asbamboo\console\command， 例如系统内置的命令行程序asbamboo:console:lists</dt>
-<dd><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span>namespace asbamboo\console\command;
+<dd><div class="first highlight-default"><div class="highlight"><pre><span></span>namespace asbamboo\console\command;
 
 use asbamboo\console\ProcessorInterface;
 use asbamboo\console\Constant;
@@ -114,16 +151,16 @@ class ListsCommand extends CommandAbstract
 <p>除了上面ListsCommand列出的三个方法意外，命令行程序CommandInterface还有其他两个必须的方法</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">options 方法，返回命令行程序的所有选项。如运行下面的命令行程序，其中”–help”就是选项:</p>
+<li><p class="first">options 方法，返回命令行程序的所有选项。如运行下面的命令行程序，其中&quot;--help&quot;就是选项:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
 </div></blockquote>
 </li>
-<li><p class="first">arguments 方法, 返回命令行程序的所有参数。如运行下面的命令行程序，其中”asbamboo:console:lists”就是参数:</p>
+<li><p class="first">arguments 方法, 返回命令行程序的所有参数。如运行下面的命令行程序，其中&quot;asbamboo:console:lists&quot;就是参数:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">help</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">help</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -136,7 +173,7 @@ class ListsCommand extends CommandAbstract
 <li><dl class="first docutils">
 <dt>可以通过AddOption添加设置，命令行程序的可选的选项。该方法按顺序有几下几个参数：</dt>
 <dd><ol class="first last arabic">
-<li>$name 选项名称，必须，通过 –{$name} 使用</li>
+<li>$name 选项名称，必须，通过 --{$name} 使用</li>
 <li>$default_value, 默认值，可选。</li>
 <li>$desc, 可选，选项的描述信息</li>
 <li>$short_name, 选项简称，可选，通常是一个字母，通过 -{$n} 使用</li>
@@ -181,7 +218,7 @@ class ListsCommand extends CommandAbstract
 </li>
 <li><p class="first">将这个新的命令行程序, 注册到控制台模块的处理器:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>...
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>...
 $Processor  = new Processor();
 $Processor-&gt;commandCollection()-&gt;add(&#39;asbamboo:console:lists&#39;, &#39;asbamboo\console\command\ListsCommand&#39;); //第一个参数是命令行程序名称，第二个参数是命令行程序运行的类名。
 $Processor-&gt;exec();
@@ -198,7 +235,7 @@ $Processor-&gt;exec();
 <dd><ol class="first arabic simple">
 <li>命令行工具（可执行文件） 命令行程序名称 命令行程序的各个参数 命令行程序的各个选项。如：</li>
 </ol>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
 <span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">-</span><span class="n">h</span>
 <span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">help</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">-</span><span class="n">q</span>
 </pre></div>
@@ -235,46 +272,26 @@ $Processor-&gt;exec();
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../event/index.html" title="上一章">事件调度模块[Event]</a></li>
-      <li>Next: <a href="../test/index.html" title="下一章">测试[test]</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>快速搜索</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="转向" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, 李春寅 <licy2013@aliyun.com>.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="../_sources/console/index.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../test/index.html" title="测试[test]"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../session/handler/pdo-handler.html" title="Session PdoHandler"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
   </body>
 </html>
