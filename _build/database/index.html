@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>autoload自动加载器 &#8212; asbamboo  文档</title>
+    <title>数据操作模块[database] &#8212; asbamboo  文档</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../_static/translations.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="数据操作模块[database]" href="../database/index.html" />
-    <link rel="prev" title="asbamboo 编码规范" href="../code-strandard/index.html" /> 
+    <link rel="next" title="控制台组件[Console]" href="../console/index.html" />
+    <link rel="prev" title="autoload自动加载器" href="../autoload/index.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,10 +35,10 @@
           <a href="../genindex.html" title="总目录"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../database/index.html" title="数据操作模块[database]"
+          <a href="../console/index.html" title="控制台组件[Console]"
              accesskey="N">下一页</a> |</li>
         <li class="right" >
-          <a href="../code-strandard/index.html" title="asbamboo 编码规范"
+          <a href="../autoload/index.html" title="autoload自动加载器"
              accesskey="P">上一页</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
       </ul>
@@ -46,11 +46,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>上一个主题</h4>
-  <p class="topless"><a href="../code-strandard/index.html"
-                        title="上一章">asbamboo 编码规范</a></p>
+  <p class="topless"><a href="../autoload/index.html"
+                        title="上一章">autoload自动加载器</a></p>
   <h4>下一个主题</h4>
-  <p class="topless"><a href="../database/index.html"
-                        title="下一章">数据操作模块[database]</a></p>
+  <p class="topless"><a href="../console/index.html"
+                        title="下一章">控制台组件[Console]</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <form class="search" action="../search.html" method="get">
@@ -69,54 +69,58 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="autoload">
-<span id="id1"></span><h1>autoload自动加载器<a class="headerlink" href="#autoload" title="永久链接至标题">¶</a></h1>
-<p>autoload是实现通过 <a class="reference external" href="https://www.php-fig.org/psr/psr-4/">psr-4</a> 命名规则自动加载类的工具。</p>
+  <div class="section" id="database">
+<span id="id1"></span><h1>数据操作模块[database]<a class="headerlink" href="#database" title="永久链接至标题">¶</a></h1>
+<p>数据操作模块database, 是一个在 <a class="reference external" href="https://www.doctrine-project.org/">doctrine</a>/orm 的基础上继续开发的模块。
+你可以通过 <a class="reference external" href="https://www.doctrine-project.org/">doctrine</a> 获取相关的使用帮助。</p>
 <div class="section" id="id2">
 <h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">autoload</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">database</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/autoload">https://github.com/asbamboo/autoload</a> 获取。</p>
+<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/database">https://github.com/asbamboo/database</a> 获取。</p>
 </li>
 </ol>
 </div>
 <div class="section" id="id3">
 <h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
-<ol class="arabic simple">
-<li>假如有个文件__DIR__/modal/demo-entity/DemoEntity.php</li>
-</ol>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">namespace</span> <span class="n">modal</span><span class="o">/</span><span class="n">demoEntity</span><span class="p">;</span>
+<p>database模块主要有两个类：一个是connection用来创建新的数据库链接，另一个是Factory用来管理数据库链接方面的操作。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
 
-<span class="k">class</span> <span class="nc">DemoEntity</span>
-<span class="p">{</span>
-    <span class="o">....</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<ol class="arabic">
-<li><p class="first">初始化autoload:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>....
-// 新建autoload实例，一个脚本只需要新建一次autoload实例
-$Autoload = include  __DIR__ . &#39;/vendor/asbamboo/autoload/bootstrap.php&#39;;
+use Doctrine\DBAL\Driver\Connection;
+use asbamboo\database\Factory;
 
-// 设置命名空间于文件目录映射关系
-$Autoload-&gt;addMappingDir(&#39;modal&#39;, __DIR__ . &#39;/modal&#39;);
-....
+// 数据库链接创建方法的第一个参数是数据哭类型，和相关配置。
+// 数据库链接创建方法的第二个参数是指定数据库字段与php实体类的属性之间的mapping关系的文件目录。
+// 数据库链接创建方法的第三个参数是指定数据库字段与php实体类的属性之间的mapping关系的类型。可选的有(annotation，yaml， xml)。
+// 数据库链接创建方法的第四个参数是字段当前是否是开发[dev]模式。
+$Connection_sqlite = Connection::create([
+        &#39;driver&#39;    =&gt; &#39;pdo_sqlite&#39;,
+        &#39;path&#39;      =&gt; &#39;db.sqlite&#39;,
+], metadata_config_path, Connection::MATADATA_ANNOTATION);
+$Connection_mysql = Connection::create([
+        &#39;driver&#39;   =&gt; &#39;pdo_mysql&#39;,
+        &#39;user&#39;     =&gt; &#39;root&#39;,
+        &#39;password&#39; =&gt; &#39;&#39;,
+        &#39;dbname&#39;   =&gt; &#39;foo&#39;
+], metadata_config_path, Connection::YAML);
+
+// 创建好的数据链接器添加到Factory统一管理。
+// 第二个参数是链接的Id，默认值是default
+$DbFactory    = new Factory();
+$Factory-&gt;addConnection($Connection_sqlite, &#39;sqlite&#39;);
+$Factory-&gt;addConnection($Connection_mysql, &#39;mysql&#39;);
+
+// 从Factory获取一个链接管理器
+// 方法的参数是上面addConnection对应的id， 默认值是default
+$MysqlManager    = $DbFactory-&gt;getManager(&#39;mysql&#39;);
+$SqliteManager   = $DbFactory-&gt;getManager(&#39;sqlite&#39;);
 </pre></div>
 </div>
-</li>
-<li><p class="first">自动加载DemoEntity.php:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>....
-$DemoEntity = new modal/demoEntity/DemoEntity();
-....
-</pre></div>
-</div>
-</li>
-</ol>
+<p>你可以通过 <a class="reference external" href="https://github.com/asbamboo/framework-demo">asbamboo/framework-demo</a> 参考asbamboo/framework是如何使用这个database模块的。</p>
 </div>
 </div>
 
@@ -133,10 +137,10 @@ $DemoEntity = new modal/demoEntity/DemoEntity();
           <a href="../genindex.html" title="总目录"
              >索引</a></li>
         <li class="right" >
-          <a href="../database/index.html" title="数据操作模块[database]"
+          <a href="../console/index.html" title="控制台组件[Console]"
              >下一页</a> |</li>
         <li class="right" >
-          <a href="../code-strandard/index.html" title="asbamboo 编码规范"
+          <a href="../autoload/index.html" title="autoload自动加载器"
              >上一页</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
       </ul>

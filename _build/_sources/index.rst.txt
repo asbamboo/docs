@@ -1,9 +1,10 @@
 .. asbamboo
 
 asbamboo
-==========
+====================
+
 :doc:`编码规范 <code-strandard/index>`
------------------------------------------
+-------------------------------------------------------
 
 .. toctree::
     :hidden:
@@ -14,6 +15,8 @@ asbamboo
 --------------------------------
 
 :doc:`自动加载[Autoload] <autoload/index>`
+
+:doc:`数据库[database] <database/index>`
 
 :doc:`助手[Helper] <helper/index>`
 
@@ -34,10 +37,13 @@ asbamboo
     :hidden:
 
     autoload/index
+    database/index
+    console/index
     helper/index
+    http/index
     event/index
     session/index
-    console/index
+    security/index
     test/index
 
 

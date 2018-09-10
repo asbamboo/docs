@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/translations.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="helper 助手模块" href="../helper/index.html" />
+    <link rel="next" title="数据操作模块[database]" href="../database/index.html" />
     <link rel="prev" title="asbamboo 编码规范" href="../code-strandard/index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
           <a href="../genindex.html" title="总目录"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../helper/index.html" title="helper 助手模块"
+          <a href="../database/index.html" title="数据操作模块[database]"
              accesskey="N">下一页</a> |</li>
         <li class="right" >
           <a href="../code-strandard/index.html" title="asbamboo 编码规范"
@@ -49,8 +49,8 @@
   <p class="topless"><a href="../code-strandard/index.html"
                         title="上一章">asbamboo 编码规范</a></p>
   <h4>下一个主题</h4>
-  <p class="topless"><a href="../helper/index.html"
-                        title="下一章">helper 助手模块</a></p>
+  <p class="topless"><a href="../database/index.html"
+                        title="下一章">数据操作模块[database]</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <form class="search" action="../search.html" method="get">
@@ -101,7 +101,7 @@
 <li><p class="first">初始化autoload:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>....
 // 新建autoload实例，一个脚本只需要新建一次autoload实例
-$Autoload = new asbamboo/autoload/Autoload();
+$Autoload = include  __DIR__ . &#39;/vendor/asbamboo/autoload/bootstrap.php&#39;;
 
 // 设置命名空间于文件目录映射关系
 $Autoload-&gt;addMappingDir(&#39;modal&#39;, __DIR__ . &#39;/modal&#39;);
@@ -133,7 +133,7 @@ $DemoEntity = new modal/demoEntity/DemoEntity();
           <a href="../genindex.html" title="总目录"
              >索引</a></li>
         <li class="right" >
-          <a href="../helper/index.html" title="helper 助手模块"
+          <a href="../database/index.html" title="数据操作模块[database]"
              >下一页</a> |</li>
         <li class="right" >
           <a href="../code-strandard/index.html" title="asbamboo 编码规范"
