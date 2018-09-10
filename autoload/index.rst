@@ -33,7 +33,7 @@ autoload是实现通过 `psr-4`_ 命名规则自动加载类的工具。
 
     ....
     // 新建autoload实例，一个脚本只需要新建一次autoload实例
-    $Autoload = new asbamboo/autoload/Autoload();
+    $Autoload = include  __DIR__ . '/vendor/asbamboo/autoload/bootstrap.php';
 
     // 设置命名空间于文件目录映射关系
     $Autoload->addMappingDir('modal', __DIR__ . '/modal');
