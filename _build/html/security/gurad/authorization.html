@@ -1,0 +1,140 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>权限设置 &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>权限设置<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>asbamboo\security\gurad\authorization\Authenticator用来控制访问权限。</p>
+<p>没有权限时抛出异常asbamboo\security\exception\AccessDeniedException。</p>
+<div class="section" id="id2">
+<h2>权限规则设置<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">访问规则</p>
+<blockquote>
+<div><p>一个访问规则是一个asbamboo\security\gurad\authorization\Rule实例。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+    use asbamboo\security\gurad\authorization\Rule;
+
+    /*
+     * 表达式$expression时字符串，表示一段是php可执行的脚本。
+     * 表达式$expression可以使用变量$user和$request
+     *  - $user 是发起当前请求的用户[asbamboo\security\user\token\UserToken::getUser()]
+     *  - $request 是当前请求[asbamboo\http\ServerRequest]
+     *  - ex:限制只能是管理员才能访问[$expression = &#39;in_array(&#39;admin&#39;, $user-&gt;getRoles())&#39;;]
+     */
+    $expression = &quot;1==2&quot;;
+    new Rule($expression);
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">访问规则集合 asbamboo\security\gurad\authorization\RuleCollection。</p>
+<blockquote>
+<div><p>RuleCollection是asbamboo\security\gurad\authorization\Rule的集合，通过RuleCollection::add方法添加访问规则</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+    use asbamboo\security\gurad\authorization\Rule;
+    use asbamboo\security\gurad\authorization\RuleCollection;
+
+    $RuleCollection = new RuleCollection();
+    $RuleCollection-&gt;add(new Role(&#39;1==1&#39;));
+    $RuleCollection-&gt;add(new Role(&#39;1==2&#39;));
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>权限使用<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>asbamboo\security\gurad\authorization\Authenticator::validate方法会循环方法规则集合[RuleCollection],将所有访问规则[Rule]的表达式都执行一遍</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\security\gurad\authorization\RuleCollection;
+use asbamboo\security\gurad\authorization\Authenticator;
+
+$RuleCollection = new RuleCollection();
+
+.....
+
+$Authenticator  = new Authenticator($RuleCollection);
+$authenticator-&gt;validate($User, $Request);
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>
