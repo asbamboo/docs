@@ -1,3 +1,6 @@
+文档生成
+==================================
+
 # pip install Sphinx
 # pip install jieba
 # sphinx-quickstart
@@ -13,3 +16,9 @@
 	# 'zh' user can custom change `jieba` dictionary path.
 	html_search_options = {'dict': os.getcwd() + 'dict.txt'}   # 根据需要设置jieba的词典路径
 # sphinx-build -b html . _build
+
+
+服务器运行
+==========================================================
+#docker build -t asbamboo/docs .
+#docker run -d -v /www/docs/_build:/html/_build -p80:80 asbamboo/docs
