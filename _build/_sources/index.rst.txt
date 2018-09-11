@@ -18,6 +18,8 @@ asbamboo
 
 :doc:`数据库[database] <database/index>`
 
+:doc:`依赖注入容器[di] <di/index>`
+
 :doc:`助手[Helper] <helper/index>`
 
 :doc:`事件调度[Event] <event/index>`
@@ -37,8 +39,9 @@ asbamboo
     :hidden:
 
     autoload/index
-    database/index
     console/index
+    database/index
+    di/index
     helper/index
     http/index
     event/index
