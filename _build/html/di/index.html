@@ -1,0 +1,208 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>依赖注入容器模块[DI] &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="helper 助手模块" href="../helper/index.html" />
+    <link rel="prev" title="数据操作模块[database]" href="../database/index.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../helper/index.html" title="helper 助手模块"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../database/index.html" title="数据操作模块[database]"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="../database/index.html"
+                        title="上一章">数据操作模块[database]</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../helper/index.html"
+                        title="下一章">helper 助手模块</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="di">
+<span id="id1"></span><h1>依赖注入容器模块[DI]<a class="headerlink" href="#di" title="永久链接至标题">¶</a></h1>
+<p>依赖注入容器模块是 <a class="reference external" href="https://github.com/asbamboo/framework">asbamboo/framework</a> 的基础模块，它知道怎样初始化并配置对象及其依赖的所有对象。 <a class="reference external" href="https://martinfowler.com/articles/injection.html">Martin</a> 的文章 已经解释了 DI 容器为什么很有用。 这里我们仅介绍 <a class="reference external" href="https://github.com/asbamboo/di">asbamboo/di</a> 模块的使用方法。</p>
+<div class="section" id="id2">
+<h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">di</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/di">https://github.com/asbamboo/di</a> 获取。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>di模块主要有container容器和service服务这两样东西。service是一个类(class)的实例。container容器内容纳所有service。
+在di模块中ServiceMapping类描述一个类在container中的 service id, class name 和 __construct方法的参数。</p>
+<p>首先，我介绍一下service注册到容器的几种方法方法。</p>
+<blockquote>
+<div><ul class="simple">
+<li>通过 ServiceMappingCollection，在Container构造方法需要传递这个参数</li>
+<li>通过 Container::set 方法</li>
+<li>服务自动注册</li>
+</ul>
+</div></blockquote>
+<ol class="arabic">
+<li><p class="first">通过 ServiceMappingCollection 注册服务</p>
+<blockquote>
+<div><p>这是Container实例化的时候必须传递的参数，其中配置的服务映射关系为容器内初始的服务信息。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+    // ServiceMapping 是一个服务的关系映射信息
+    // $ServiceMappingCollection 当然还可以继续
+    // 使用ServiceMappingCollection::add方法添加多个服务映射关系的信息。
+    $ServiceMappingCollection    = new ServiceMappingCollection();
+    $ServiceMapping              = new ServiceMapping([
+        &#39;id&#39;                     =&gt; &#39;service1&#39; // 服务ID
+        &#39;class&#39;                  =&gt; Service1::class // 服务class
+        &#39;init_params&#39;            =&gt; [&#39;p1&#39;, &#39;@p2&#39;] //像构造方法传递的参数
+    ]);
+    $ServiceMappingCollection-&gt;add($ServiceMapping);
+
+    $Container  = new Container($ServiceMappingCollection);
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">通过 Container::set 方法注册服务</p>
+<blockquote>
+<div><p>注意：container::set 方法和ServiceMappingCollection不一样，这个方法接收两个参数第一个是服务的唯一标示$id,第二个参数是服务的一个对象$service。</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">&lt;?php</p>
+<p>…</p>
+<p class="last">$Container  = new Container($ServiceMappingCollection);
+$Container-&gt;set(‘sevice2’, new Service2(‘arg1’,’arg2’));</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+<li><p class="first">自动注册的服务</p>
+<blockquote>
+<div><p>以上两种方式是显示的声明注册一个服务，还有一种系统自动注册的服务。
+系统自动注册的服务，是在调用Container::get方法时自动注册。
+当get的服务唯一标示$id， 等于类名（class_name）时，并且这个类不属于任何一个服务的ID 是，将自动注册该服务。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+...
+
+$Container-&gt;get(Service3::class);
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>我现在介绍一下服务的自动注入。</p>
+<blockquote>
+<div><p>使用了容器模块以后，你后续的代码不应该使用 new 关键是去实例化一个类。而应该统一使用Container::get的方式去从容器中查找并获取一个服务对象。
+当Container::get一个服务，该服务仅有ServiceMapping信息，还没有实例化对象时，该服务的构造方法的参数将自动注入。自动注入的规则：</p>
+<ol class="arabic simple">
+<li>如果需要传入的参数在ServiceMapping中找到 <a class="reference internal" href="#init-params">init_params</a> 那么，不会发生自动注入。</li>
+<li>如果参数有默认值，那么实例化的时候使用默认值。不会发生自动注入。</li>
+<li><dl class="first docutils">
+<dt>自动注入注入的规则是，首先去Container找与参数类型一致的服务。</dt>
+<dd><ul class="first last">
+<li>如果找到的服务数量超过一个，那么无法完成自动注入，程序会抛出异常[CannotInjectParamToServiceException]</li>
+<li>如果没有找到的服务，那么会尝试自动注册并且自动注入。自动注册的类（如果类型写的是Interface,那么会假设在同目录下有一个类，名字等于这个Interface名字截取掉后面的Interface字样。）</li>
+<li>如果在容器中找到且只找到一个服务和参数类型一致，那么该服务会自动注入。</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<p>在 <a class="reference external" href="https://github.com/asbamboo/framework-demo">asbamboo/framework-demo</a> 中有很多自动注入的例子。这里就偷懒不写出来了。</p>
+</div></blockquote>
+</div>
+<div class="section" id="init-params">
+<h2>init_params<a class="headerlink" href="#init-params" title="永久链接至标题">¶</a></h2>
+<p>init_params是键值对应的数组[key=&gt;value]。当value的第一个字符是’&#64;’时，表示这个参数是一个服务,’&#64;’后面更随的应该是服务ID。
+init_parmas传入实例化类的构造方法时，按顺序有几个规则：</p>
+<ol class="arabic simple">
+<li>如果init_parmas中的某个key的名字等于构造方法的参数名，那么这个key的value就是对应的参数。</li>
+<li>如果init_params中某个value的类型和构造方法的参数类型一致，那么这个value就是对应的参数。</li>
+<li>按照前面两个规则分配init_params后发现构造方法还有参数需要传递，并且init_params中的参数没有分配完，那么将init_params中剩余的参数按顺序分配给构造方法。</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../helper/index.html" title="helper 助手模块"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../database/index.html" title="数据操作模块[database]"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>
