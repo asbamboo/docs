@@ -1,3 +1,5 @@
+.. _code_strandard:
+
 asbamboo 编码规范
 =================
 

@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Session PdoHandler &#8212; asbamboo php framework  文档</title>
+    <title>template extension 示例 &#8212; asbamboo php framework  文档</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/translations.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
-    <link rel="next" title="安全模块[security]" href="../../security/index.html" />
-    <link rel="prev" title="SESSION模块[Session]" href="../index.html" /> 
+    <link rel="next" title="测试[test]" href="../../test/index.html" />
+    <link rel="prev" title="视图模板模块[template]" href="../index.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,23 +35,23 @@
           <a href="../../genindex.html" title="总目录"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../../security/index.html" title="安全模块[security]"
+          <a href="../../test/index.html" title="测试[test]"
              accesskey="N">下一页</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="SESSION模块[Session]"
+          <a href="../index.html" title="视图模板模块[template]"
              accesskey="P">上一页</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">SESSION模块[Session]</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">视图模板模块[template]</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>上一个主题</h4>
   <p class="topless"><a href="../index.html"
-                        title="上一章">SESSION模块[Session]</a></p>
+                        title="上一章">视图模板模块[template]</a></p>
   <h4>下一个主题</h4>
-  <p class="topless"><a href="../../security/index.html"
-                        title="下一章">安全模块[security]</a></p>
+  <p class="topless"><a href="../../test/index.html"
+                        title="下一章">测试[test]</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <form class="search" action="../../search.html" method="get">
@@ -70,27 +70,38 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="session-pdohandler">
-<h1>Session PdoHandler<a class="headerlink" href="#session-pdohandler" title="永久链接至标题">¶</a></h1>
-<p>类名：asbamboo\session\handler\PdoHandler</p>
-<p>该类具有两个参数:</p>
-<blockquote>
-<div><p>第一个参数$Pdo，传入php里面的Pdo对象，目前PdoHandler仅支持mysql数据库。</p>
-<p>第二个参数$options，传入一些配置选项。</p>
-<blockquote>
-<div><p>默认情况下，这个handler会在数据库中创建一个数据表，表名是session，有三个字段，分别是sid:存session_id，data:存序列化后的session值，time:存的是session写入的事件(会被用在是否过期的判断)。</p>
-<dl class="docutils">
-<dt>通过$options值可以改变数据表相关的默认值</dt>
-<dd><ol class="first last arabic simple">
-<li>$options[‘table’] session数据表的名称</li>
-<li>$options[‘col_id’] 存放session_id的列名</li>
-<li>$options[‘col_data’] 存放session值的列名</li>
-<li>$options[‘col_time’] 存放session写入时间的列名</li>
-</ol>
-</dd>
-</dl>
-</div></blockquote>
-</div></blockquote>
+  <div class="section" id="template-extension">
+<span id="template-extension-template"></span><h1>template extension 示例<a class="headerlink" href="#template-extension" title="永久链接至标题">¶</a></h1>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\template\ExtensionGlobalsInterface;
+use asbamboo\template\Extension;
+use asbamboo\template\Functions;
+
+class TemplateExtension extends Extension implements ExtensionGlobalsInterface
+{
+    public function getGlobals()
+    {
+        return [&#39;app&#39;=&gt;[
+            &#39;user&#39;      =&gt; $this-&gt;user(),
+            &#39;request&#39;   =&gt; $this-&gt;request(),
+            &#39;is_debug&#39;  =&gt; $this-&gt;isDebug(),
+            ...
+        ]];
+    }
+
+    public function getFunctions()
+    {
+        return [
+            new Functions(&#39;path&#39;, [$this, &#39;path&#39;]),
+            new Functions(&#39;is_current&#39;, [$this, &#39;isCurrent&#39;]),
+            ...
+        ];
+    }
+
+    ...
+}
+</pre></div>
+</div>
 </div>
 
 
@@ -106,13 +117,13 @@
           <a href="../../genindex.html" title="总目录"
              >索引</a></li>
         <li class="right" >
-          <a href="../../security/index.html" title="安全模块[security]"
+          <a href="../../test/index.html" title="测试[test]"
              >下一页</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="SESSION模块[Session]"
+          <a href="../index.html" title="视图模板模块[template]"
              >上一页</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >SESSION模块[Session]</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >视图模板模块[template]</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

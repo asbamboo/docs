@@ -124,9 +124,9 @@
 <dl class="docutils">
 <dt>::</dt>
 <dd><p class="first">&lt;?php</p>
-<p>...</p>
+<p>…</p>
 <p class="last">$Container  = new Container($ServiceMappingCollection);
-$Container-&gt;set('sevice2', new Service2('arg1','arg2'));</p>
+$Container-&gt;set(‘sevice2’, new Service2(‘arg1’,’arg2’));</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -169,7 +169,7 @@ $Container-&gt;get(Service3::class);
 </div>
 <div class="section" id="init-params">
 <h2>init_params<a class="headerlink" href="#init-params" title="永久链接至标题">¶</a></h2>
-<p>init_params是键值对应的数组[key=&gt;value]。当value的第一个字符是'&#64;'时，表示这个参数是一个服务,'&#64;'后面更随的应该是服务ID。
+<p>init_params是键值对应的数组[key=&gt;value]。当value的第一个字符是’&#64;’时，表示这个参数是一个服务,’&#64;’后面更随的应该是服务ID。
 init_parmas传入实例化类的构造方法时，按顺序有几个规则：</p>
 <ol class="arabic simple">
 <li>如果init_parmas中的某个key的名字等于构造方法的参数名，那么这个key的value就是对应的参数。</li>

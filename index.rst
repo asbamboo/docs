@@ -16,6 +16,8 @@ asbamboo
 
 :doc:`自动加载[Autoload] <autoload/index>`
 
+:doc:`控制台组件[Console] <console/index>`
+
 :doc:`数据库[Database] <database/index>`
 
 :doc:`依赖注入容器[Di] <di/index>`
@@ -32,7 +34,7 @@ asbamboo
 
 :doc:`安全[Security] <security/index>`
 
-:doc:`控制台组件[Console] <console/index>`
+:doc:`视图模板[Template] <template/index>`
 
 :doc:`测试[Test] <test/index>`
 
@@ -50,6 +52,7 @@ asbamboo
     event/index
     session/index
     security/index
+    template/index
     test/index
 
 

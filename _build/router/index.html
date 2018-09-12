@@ -70,7 +70,7 @@
           <div class="body" role="main">
             
   <div class="section" id="router">
-<h1>路由模块[router]<a class="headerlink" href="#router" title="永久链接至标题">¶</a></h1>
+<span id="id1"></span><h1>路由模块[router]<a class="headerlink" href="#router" title="永久链接至标题">¶</a></h1>
 <dl class="docutils">
 <dt>路由模块控制http请求的url，与处理这个url的回调方法之间的对应关系。每一个请求url都应该有一个对应的路由标识符（router id），router模块的主要功能是：</dt>
 <dd><ul class="first last simple">
@@ -79,8 +79,8 @@
 </ul>
 </dd>
 </dl>
-<div class="section" id="id1">
-<h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id2">
+<h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">router</span>
@@ -91,8 +91,8 @@
 </li>
 </ol>
 </div>
-<div class="section" id="id2">
-<h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <p>本代码示例演示了Router组件如何实现经典的输出Hello Word程序。</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
 use asbamboo\router\Route;
@@ -128,10 +128,10 @@ $Router-&gt;matchRequest()-&gt;send();
 </pre></div>
 </div>
 <blockquote>
-<div><p>...</p>
+<div><p>…</p>
 <p>// 如果省略的部分代码是Hello Word演示中的部分代码
 // 生成的url 结果为 /hello/X%E5%A5%B3%E5%A3%AB
-$Router-&gt;generateUrl('hello', ['name' =&gt; 'X女士']);</p>
+$Router-&gt;generateUrl(‘hello’, [‘name’ =&gt; ‘X女士’]);</p>
 </div></blockquote>
 </div>
 <div class="section" id="routecollection">
@@ -155,8 +155,8 @@ $RouteCollection    = $Loader-&gt;load($resource);
 </div>
 <div class="section" id="router-matchrequest">
 <h2>Router::matchRequest的参数匹配规则说明<a class="headerlink" href="#router-matchrequest" title="永久链接至标题">¶</a></h2>
-<p>这里假设/hell/{name}是 (<a class="reference internal" href="#id2">如何使用？</a>) 的路由信息，url path 大括号的部分表示方法的一个参数名如/hello/{name}, 其中的name是callback的参数$name。</p>
-<p>生成url的时候如果没传参数&quot;$Router-&gt;generateUrl('hello')&quot; 那么name等于默认值&quot;XX先生&quot;
+<p>这里假设/hell/{name}是 (<a class="reference internal" href="#id3">如何使用？</a>) 的路由信息，url path 大括号的部分表示方法的一个参数名如/hello/{name}, 其中的name是callback的参数$name。</p>
+<p>生成url的时候如果没传参数”$Router-&gt;generateUrl(‘hello’)” 那么name等于默认值”XX先生”
 回调方法callback上面的参数值的查找顺序。</p>
 <ol class="arabic">
 <li><p class="first">从url的大括号部分，如/hello/张山. 这时$name 等于 张山</p>
@@ -170,10 +170,10 @@ $RouteCollection    = $Loader-&gt;load($resource);
 }));
 </pre></div>
 </div>
-<p>这时参数$name是$_REQUEST['name']</p>
+<p>这时参数$name是$_REQUEST[‘name’]</p>
 </div></blockquote>
 </li>
-<li><p class="first">如果!isset($_REQUEST['name'])，这时$name等于默认值（default）；</p>
+<li><p class="first">如果!isset($_REQUEST[‘name’])，这时$name等于默认值（default）；</p>
 </li>
 </ol>
 </div>

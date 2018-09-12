@@ -70,10 +70,10 @@
           <div class="body" role="main">
             
   <div class="section" id="console">
-<h1>控制台组件[Console]<a class="headerlink" href="#console" title="永久链接至标题">¶</a></h1>
+<span id="id1"></span><h1>控制台组件[Console]<a class="headerlink" href="#console" title="永久链接至标题">¶</a></h1>
 <p>控制台组件用于创建命令行程序。命令行程序可以用来处理任何经常发生的任务，如crontab定时任务，或者其他的批量操作。</p>
-<div class="section" id="id1">
-<h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id2">
+<h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">console</span>
@@ -84,8 +84,8 @@
 </li>
 </ol>
 </div>
-<div class="section" id="id2">
-<h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">创建命令行工具（假设文件名为./bin/console）</p>
 <blockquote>
@@ -151,14 +151,14 @@ class ListsCommand extends CommandAbstract
 <p>除了上面ListsCommand列出的三个方法意外，命令行程序CommandInterface还有其他两个必须的方法</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">options 方法，返回命令行程序的所有选项。如运行下面的命令行程序，其中&quot;--help&quot;就是选项:</p>
+<li><p class="first">options 方法，返回命令行程序的所有选项。如运行下面的命令行程序，其中”–help”就是选项:</p>
 <blockquote>
 <div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
 </div></blockquote>
 </li>
-<li><p class="first">arguments 方法, 返回命令行程序的所有参数。如运行下面的命令行程序，其中&quot;asbamboo:console:lists&quot;就是参数:</p>
+<li><p class="first">arguments 方法, 返回命令行程序的所有参数。如运行下面的命令行程序，其中”asbamboo:console:lists”就是参数:</p>
 <blockquote>
 <div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">help</span> <span class="n">asbamboo</span><span class="p">:</span><span class="n">console</span><span class="p">:</span><span class="n">lists</span>
 </pre></div>
@@ -173,7 +173,7 @@ class ListsCommand extends CommandAbstract
 <li><dl class="first docutils">
 <dt>可以通过AddOption添加设置，命令行程序的可选的选项。该方法按顺序有几下几个参数：</dt>
 <dd><ol class="first last arabic">
-<li>$name 选项名称，必须，通过 --{$name} 使用</li>
+<li>$name 选项名称，必须，通过 –{$name} 使用</li>
 <li>$default_value, 默认值，可选。</li>
 <li>$desc, 可选，选项的描述信息</li>
 <li>$short_name, 选项简称，可选，通常是一个字母，通过 -{$n} 使用</li>

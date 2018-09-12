@@ -70,11 +70,11 @@
           <div class="body" role="main">
             
   <div class="section" id="event">
-<h1>事件调度模块[Event]<a class="headerlink" href="#event" title="永久链接至标题">¶</a></h1>
+<span id="id1"></span><h1>事件调度模块[Event]<a class="headerlink" href="#event" title="永久链接至标题">¶</a></h1>
 <p>事件调度模块的作用是使代码块易于扩展，在功能扩展时不需要对原有的代码进行修改，或者一段代码被其他人调用时，他们可以不修改代码的同时做出相应的扩展。
 在使用说明中将介绍：利用事件调度模块为一个用户注册程序添加事件，使代码易于扩展。</p>
-<div class="section" id="id1">
-<h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id2">
+<h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">event</span>
@@ -85,8 +85,8 @@
 </li>
 </ol>
 </div>
-<div class="section" id="id2">
-<h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">假设有一段用户注册代码:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">namespace</span> <span class="n">app</span><span class="p">;</span>
@@ -147,8 +147,8 @@ EventScheduler::instance()-&gt;bind(&#39;user.register.success&#39;, [new app\ev
 </li>
 </ol>
 </div>
-<div class="section" id="id3">
-<h2>绑定事件处理代码的优先级<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id4">
+<h2>绑定事件处理代码的优先级<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
 <p>EventScheduler::instance()-&gt;bind 方法还有第三个参数，是int类型，表示绑定后执行顺序的优先级，数字大的方法优先执行。如果方法执行后返回false。那将跳出事件处理，不再执行其他事件</p>
 </div>
 <div class="section" id="on">
