@@ -1,0 +1,208 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>路由模块[router] &#8212; asbamboo  文档</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="事件调度模块[Event]" href="../event/index.html" />
+    <link rel="prev" title="HTTP消息模块 [HTTP]" href="../http/index.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../event/index.html" title="事件调度模块[Event]"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../http/index.html" title="HTTP消息模块 [HTTP]"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="../http/index.html"
+                        title="上一章">HTTP消息模块 [HTTP]</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../event/index.html"
+                        title="下一章">事件调度模块[Event]</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="router">
+<h1>路由模块[router]<a class="headerlink" href="#router" title="永久链接至标题">¶</a></h1>
+<dl class="docutils">
+<dt>路由模块控制http请求的url，与处理这个url的回调方法之间的对应关系。每一个请求url都应该有一个对应的路由标识符（router id），router模块的主要功能是：</dt>
+<dd><ul class="first last simple">
+<li>通过给定的router id和一些参数生成一个url（这个url可以使用在html a标签上）</li>
+<li>匹配当前request的callback方法，并且执行callback。</li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="id1">
+<h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">router</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/router">https://github.com/asbamboo/router</a> 获取。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>本代码示例演示了Router组件如何实现经典的输出Hello Word程序。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\router\Route;
+use asbamboo\router\RouteCollection;
+use asbamboo\router\Router;
+use asbamboo\http\Response;
+use asbamboo\http\Stream;
+
+
+$RouteCollection   = new RouteCollection();
+$RouteCollection-&gt;add(new Route(&#39;home&#39;, &#39;/&#39;, function(){
+    $Body       = new Stream(&#39;php://temp&#39;, &#39;w+b&#39;);
+    $Body-&gt;write(&#39;hello word.&#39;);
+    return new Response($Body);
+}));
+
+$RouteCollection-&gt;add(new Route(&#39;hello&#39;, &#39;/hello/{name}&#39;, function($name){
+    $Body       = new Stream(&#39;php://temp&#39;, &#39;w+b&#39;);
+    $Body-&gt;write(&#39;hello&#39; . $name);
+    return new Response($Body);
+}, &#39;XX先生&#39;));
+
+$Router             = new Router($RouteCollection);
+
+$Router-&gt;matchRequest()-&gt;send();
+</pre></div>
+</div>
+</div>
+<div class="section" id="routerurl">
+<h2>使用Router生成url<a class="headerlink" href="#routerurl" title="永久链接至标题">¶</a></h2>
+<p>使用router组件生成url很简单</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+</pre></div>
+</div>
+<blockquote>
+<div><p>...</p>
+<p>// 如果省略的部分代码是Hello Word演示中的部分代码
+// 生成的url 结果为 /hello/X%E5%A5%B3%E5%A3%AB
+$Router-&gt;generateUrl('hello', ['name' =&gt; 'X女士']);</p>
+</div></blockquote>
+</div>
+<div class="section" id="routecollection">
+<h2>使用一组数组信息生成RouteCollection<a class="headerlink" href="#routecollection" title="永久链接至标题">¶</a></h2>
+<p>Router模块内有一个 asbamboo\router\loader\LoaderByArray 类被用来将一组数组信息转化成 RouteCollection</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\router\RouteCollection;
+use asbamboo\router\loader\LoaderByArray;
+
+// 这个示例中路由test2的callback传递的是一个字符串(格式为&quot;类名:方法名&quot;)
+// 这样的callback参数等同于 [new TestClass, &#39;main&#39;];
+$resource           = [
+    [&#39;id&#39; =&gt; &#39;test_id1&#39;, &#39;path&#39; =&gt; &#39;/test1&#39;, &#39;callback&#39; =&gt; function(){}],
+    [&#39;id&#39; =&gt; &#39;test_id2&#39;, &#39;path&#39; =&gt; &#39;/test2&#39;, &#39;callback&#39; =&gt; &#39;TestClass:main&#39;],
+];
+$Loader             = new LoaderByArray();
+$RouteCollection    = $Loader-&gt;load($resource);
+</pre></div>
+</div>
+</div>
+<div class="section" id="router-matchrequest">
+<h2>Router::matchRequest的参数匹配规则说明<a class="headerlink" href="#router-matchrequest" title="永久链接至标题">¶</a></h2>
+<p>这里假设/hell/{name}是 (<a class="reference internal" href="#id2">如何使用？</a>) 的路由信息，url path 大括号的部分表示方法的一个参数名如/hello/{name}, 其中的name是callback的参数$name。</p>
+<p>生成url的时候如果没传参数&quot;$Router-&gt;generateUrl('hello')&quot; 那么name等于默认值&quot;XX先生&quot;
+回调方法callback上面的参数值的查找顺序。</p>
+<ol class="arabic">
+<li><p class="first">从url的大括号部分，如/hello/张山. 这时$name 等于 张山</p>
+</li>
+<li><p class="first">如果url不带参数，如</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>$RouteCollection-&gt;add(new Route(&#39;hello&#39;, &#39;/hello&#39;, function($name = &#39;default&#39;){
+    $Body       = new Stream(&#39;php://temp&#39;, &#39;w+b&#39;);
+    $Body-&gt;write(&#39;hello&#39; . $name);
+    return new Response($Body);
+}));
+</pre></div>
+</div>
+<p>这时参数$name是$_REQUEST['name']</p>
+</div></blockquote>
+</li>
+<li><p class="first">如果!isset($_REQUEST['name'])，这时$name等于默认值（default）；</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../event/index.html" title="事件调度模块[Event]"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../http/index.html" title="HTTP消息模块 [HTTP]"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

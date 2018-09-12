@@ -16,17 +16,19 @@ asbamboo
 
 :doc:`自动加载[Autoload] <autoload/index>`
 
-:doc:`数据库[database] <database/index>`
+:doc:`数据库[Database] <database/index>`
 
-:doc:`依赖注入容器[di] <di/index>`
+:doc:`依赖注入容器[Di] <di/index>`
 
 :doc:`助手[Helper] <helper/index>`
+
+:doc:`HTTP[Http] <http/index>`
+
+:doc:`路由[Router] <router/index>`
 
 :doc:`事件调度[Event] <event/index>`
 
 :doc:`SESSION[Session] <session/index>`
-
-:doc:`HTTP[http] <http/index>`
 
 :doc:`安全[Security] <security/index>`
 
@@ -44,6 +46,7 @@ asbamboo
     di/index
     helper/index
     http/index
+    router/index
     event/index
     session/index
     security/index
