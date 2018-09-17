@@ -1,0 +1,210 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Hello word &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="autoload自动加载器" href="../../autoload/index.html" />
+    <link rel="prev" title="asbamboo/framwork简介" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="asbamboo/framwork简介"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="../index.html"
+                        title="上一章">asbamboo/framwork简介</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../../autoload/index.html"
+                        title="下一章">autoload自动加载器</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hello-word">
+<h1>Hello word<a class="headerlink" href="#hello-word" title="永久链接至标题">¶</a></h1>
+<ol class="arabic">
+<li><p class="first">安装 <a class="reference external" href="https://github.com/asbamboo/framework-standard">asbamboo/framework-standard</a></p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">create</span><span class="o">-</span><span class="n">project</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">framework</span><span class="o">-</span><span class="n">standard</span> <span class="n">asbamboo</span><span class="o">-</span><span class="n">study</span> <span class="o">--</span><span class="n">prefer</span><span class="o">-</span><span class="n">source</span> <span class="o">-</span><span class="n">s</span> <span class="n">dev</span>
+</pre></div>
+</div>
+<p>asbamboo-study的目录结构:</p>
+<blockquote>
+<div><ul class="simple">
+<li>AppKernel.php [一个应用的核心]</li>
+<li><dl class="first docutils">
+<dt>bin [用来存放终端可执行脚本的目录]</dt>
+<dd><ul class="first last">
+<li>console [命令行程序入口文件]</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>config [配置文件目录]</dt>
+<dd><ul class="first last">
+<li>config.php [配置主文件，其他配置文件都被加载到这里]</li>
+<li>router.php [路由配置文件]</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>controller [控制器目录]</dt>
+<dd><ul class="first last">
+<li>Home.php [控制器]</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>public [http请求跟目录]</dt>
+<dd><ul class="first last">
+<li>index.php [http入口文件]</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>vendor [这个目录其实是由composer生成。框架的代码和其他第三方的代码都在这里]</dt>
+<dd><ul class="first last">
+<li>…</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>view [视图目录]</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>home [控制器Home的视图目录]</dt>
+<dd><ul class="first last">
+<li>index.html.tpl [控制器Home中method为index的视图文件]</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p><cite>特别说明</cite>：这只是一种标准的目录结构，并不是说使用 <a class="reference external" href="https://github.com/asbamboo/framework">asbamboo/framework</a> 就一定要保持这个目录接口，在 <a class="reference external" href="https://github.com/asbamboo/framework">asbamboo/framework</a> 几乎所有的事情都是灵活的(可以完全按照你的意思去配置)。</p>
+</div></blockquote>
+</li>
+<li><p class="first">运行Hello word程序</p>
+<blockquote>
+<div><p>这个asbamboo-study已经配置好了Hello word 代码,在asbamboo-study目录下执行:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">public</span> <span class="o">&amp;&amp;</span> <span class="n">php</span> <span class="o">-</span><span class="n">S</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8000</span>
+</pre></div>
+</div>
+<p>在浏览器中输入http://127.0.0.1:8000，程序运行过程：</p>
+<ol class="arabic simple">
+<li>index.php 中代码说明了使用http请求的方式执行AppKernel</li>
+<li>AppKernel中指定了配置主文件，和项目根目录。</li>
+<li>主配置文件又加载了配置文件router，并且还指定了视图模板的文件目录</li>
+<li>AppKernel根据router配置中找到了控制器[Home:index]</li>
+<li>控制器又去读取视图文件返回一个response给AppKernel</li>
+<li>AppKernel响应response信息。</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">运行命令行程序[console]</p>
+<blockquote>
+<div><p>这个asbamboo-study也配置好了入口文件,在asbamboo-study目录下执行:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="nb">bin</span><span class="o">/</span><span class="n">console</span>
+</pre></div>
+</div>
+<p>可以看到终端输出了几行系统内置的命令</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first last">asbamboo:console:lists 列出所有命令
+asbamboo:console:help  获取帮助信息
+…</p>
+</dd>
+</dl>
+<p>这时因为./bin/console不带参数的情况下，默认执行asbamboo:console:lists命令</p>
+</div></blockquote>
+</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="asbamboo/framwork简介"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

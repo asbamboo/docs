@@ -1,7 +1,9 @@
+.. session_handler_pdo:
+
 Session PdoHandler
 =====================
 
-类名：asbamboo\session\handler\PdoHandler
+类名：asbamboo\\session\\handler\\PdoHandler
 
 该类具有两个参数:
 

@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>路由模块[router] &#8212; asbamboo  文档</title>
+    <title>路由模块[router] &#8212; asbamboo php framework  文档</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="../http/index.html" title="HTTP消息模块 [HTTP]"
              accesskey="P">上一页</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo php framework  文档</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -70,7 +70,7 @@
           <div class="body" role="main">
             
   <div class="section" id="router">
-<h1>路由模块[router]<a class="headerlink" href="#router" title="永久链接至标题">¶</a></h1>
+<span id="id1"></span><h1>路由模块[router]<a class="headerlink" href="#router" title="永久链接至标题">¶</a></h1>
 <dl class="docutils">
 <dt>路由模块控制http请求的url，与处理这个url的回调方法之间的对应关系。每一个请求url都应该有一个对应的路由标识符（router id），router模块的主要功能是：</dt>
 <dd><ul class="first last simple">
@@ -79,8 +79,8 @@
 </ul>
 </dd>
 </dl>
-<div class="section" id="id1">
-<h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id2">
+<h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">router</span>
@@ -91,8 +91,8 @@
 </li>
 </ol>
 </div>
-<div class="section" id="id2">
-<h2>如何使用？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <p>本代码示例演示了Router组件如何实现经典的输出Hello Word程序。</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
 use asbamboo\router\Route;
@@ -155,7 +155,7 @@ $RouteCollection    = $Loader-&gt;load($resource);
 </div>
 <div class="section" id="router-matchrequest">
 <h2>Router::matchRequest的参数匹配规则说明<a class="headerlink" href="#router-matchrequest" title="永久链接至标题">¶</a></h2>
-<p>这里假设/hell/{name}是 (<a class="reference internal" href="#id2">如何使用？</a>) 的路由信息，url path 大括号的部分表示方法的一个参数名如/hello/{name}, 其中的name是callback的参数$name。</p>
+<p>这里假设/hell/{name}是 (<a class="reference internal" href="#id3">如何使用？</a>) 的路由信息，url path 大括号的部分表示方法的一个参数名如/hello/{name}, 其中的name是callback的参数$name。</p>
 <p>生成url的时候如果没传参数”$Router-&gt;generateUrl(‘hello’)” 那么name等于默认值”XX先生”
 回调方法callback上面的参数值的查找顺序。</p>
 <ol class="arabic">
@@ -197,7 +197,7 @@ $RouteCollection    = $Loader-&gt;load($resource);
         <li class="right" >
           <a href="../http/index.html" title="HTTP消息模块 [HTTP]"
              >上一页</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo php framework  文档</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

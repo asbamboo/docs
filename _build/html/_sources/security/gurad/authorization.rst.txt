@@ -1,3 +1,5 @@
+.. _security_gurad_authorization:
+
 权限设置
 =====================
 
