@@ -61,7 +61,7 @@ Hello word
         asbamboo:console:help  获取帮助信息
         ...
      
-    这时因为./bin/console不带参数的情况下，默认执行asbamboo:console:lists命令
+    这是因为./bin/console不带参数的情况下，默认执行asbamboo:console:lists命令
 
 .. _asbamboo/framework-standard: https://github.com/asbamboo/framework-standard
 .. _asbamboo/framework: https://github.com/asbamboo/framework
