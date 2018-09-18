@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'asbamboo'
+project = 'asbamboo php framework'
 copyright = '2018, 李春寅 <licy2013@aliyun.com>'
 author = '李春寅 <licy2013@aliyun.com>'
 

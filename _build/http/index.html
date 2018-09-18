@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>HTTP[http] &#8212; asbamboo  文档</title>
+    <title>HTTP消息模块 [HTTP] &#8212; asbamboo php framework  文档</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/translations.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="事件调度模块[Event]" href="../event/index.html" />
+    <link rel="next" title="路由模块[router]" href="../router/index.html" />
     <link rel="prev" title="单例模式的公共trait" href="../helper/traits/singleton-class-trait.html" /> 
   </head>
   <body>
@@ -35,12 +35,12 @@
           <a href="../genindex.html" title="总目录"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../event/index.html" title="事件调度模块[Event]"
+          <a href="../router/index.html" title="路由模块[router]"
              accesskey="N">下一页</a> |</li>
         <li class="right" >
           <a href="../helper/traits/singleton-class-trait.html" title="单例模式的公共trait"
              accesskey="P">上一页</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo php framework  文档</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -49,8 +49,8 @@
   <p class="topless"><a href="../helper/traits/singleton-class-trait.html"
                         title="上一章">单例模式的公共trait</a></p>
   <h4>下一个主题</h4>
-  <p class="topless"><a href="../event/index.html"
-                        title="下一章">事件调度模块[Event]</a></p>
+  <p class="topless"><a href="../router/index.html"
+                        title="下一章">路由模块[router]</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <form class="search" action="../search.html" method="get">
@@ -70,7 +70,7 @@
           <div class="body" role="main">
             
   <div class="section" id="http-http">
-<span id="http"></span><h1>HTTP[http]<a class="headerlink" href="#http-http" title="永久链接至标题">¶</a></h1>
+<span id="http"></span><h1>HTTP消息模块 [HTTP]<a class="headerlink" href="#http-http" title="永久链接至标题">¶</a></h1>
 <p>HTTP模块是基于 <a class="reference external" href="https://www.php-fig.org/psr/psr-7/">https://www.php-fig.org/psr/psr-7/</a> 的实现。</p>
 <div class="section" id="id1">
 <h2>如何安装？<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
@@ -82,6 +82,26 @@
 </li>
 <li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/http">https://github.com/asbamboo/http</a> 获取。</p>
 </li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>说明<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>http模块里面有一个psr目录，该目录下文件是根据 <a class="reference external" href="https://www.php-fig.org/psr/psr-7/">psr-7</a> 规范编写的基础的http-message类。然后在psr文件目录的外面，是psr基础上做了一些扩展的方法。主要扩展有：</p>
+<ol class="arabic simple">
+<li>ServerRequest扩展了getCookieParam(获取cookie的某个键值)，getQueryParam（获取$_GET中的某个键值），getRequestParams（获取$_REQUEST值），getRequestParam（获取$_REQUEST某个键值），getPostParams（获取$_POST值），getPostParam（获取$_POST某个键值）</li>
+<li><dl class="first docutils">
+<dt>Response扩展了几个方法</dt>
+<dd><ul class="first last">
+<li>addHeader 添加 header 信息 与withHeader区别是这个addHeader return $this;</li>
+<li>setBody 设置 Body 信息 与withBody区别是这个setBody return $this;</li>
+<li>sendHeaders 发送响应消息头</li>
+<li>sendBody 发送响应消息主体</li>
+<li>send 发送响应的消息头和消息主体</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>添加了 RedirectResponse 返回一个目标跳转的消息，默认http_code 302。添加了 JsonResponse 返回一个消息内容是json字符串响应信息</li>
 </ol>
 </div>
 </div>
@@ -99,12 +119,12 @@
           <a href="../genindex.html" title="总目录"
              >索引</a></li>
         <li class="right" >
-          <a href="../event/index.html" title="事件调度模块[Event]"
+          <a href="../router/index.html" title="路由模块[router]"
              >下一页</a> |</li>
         <li class="right" >
           <a href="../helper/traits/singleton-class-trait.html" title="单例模式的公共trait"
              >上一页</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo  文档</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo php framework  文档</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

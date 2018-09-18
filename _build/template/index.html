@@ -1,0 +1,146 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>视图模板模块[template] &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="template extension 示例" href="extension/template.html" />
+    <link rel="prev" title="权限设置" href="../security/gurad/authorization.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="extension/template.html" title="template extension 示例"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../security/gurad/authorization.html" title="权限设置"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="../security/gurad/authorization.html"
+                        title="上一章">权限设置</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="extension/template.html"
+                        title="下一章">template extension 示例</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="template">
+<span id="id1"></span><h1>视图模板模块[template]<a class="headerlink" href="#template" title="永久链接至标题">¶</a></h1>
+<p>视图模板template模块是建立在 <a class="reference external" href="https://github.com/twigphp/twig">twig</a> 基础上继续扩展开发的一个模块。在 <a class="reference external" href="https://github.com/twigphp/twig">twig</a> 说明文档在template模块中同样适用。</p>
+<div class="section" id="id2">
+<h2>如何安装？<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">通过 <a class="reference external" href="https://getcomposer.org/">composer</a> 安装:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">composer</span> <span class="n">require</span> <span class="n">asbamboo</span><span class="o">/</span><span class="n">template</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">从 <a class="reference external" href="https://github.com/asbamboo/template">https://github.com/asbamboo/template</a> 获取。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>如何使用？<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\template\Template;
+
+...
+
+$Template   = new Template($view_path, $cache_path);
+$content    = $Template-&gt;render(&#39;test.html.twig&#39;, [&#39;test&#39; =&gt; &#39;test&#39;]);
+
+...
+</pre></div>
+</div>
+</div>
+<div class="section" id="asbamboo-template-templatetwig-environment">
+<h2>asbamboo\template\Template拥有所有Twig_Environment类中的方法<a class="headerlink" href="#asbamboo-template-templatetwig-environment" title="永久链接至标题">¶</a></h2>
+<p>asbamboo\template\Template不是继承Twig_Environment，但可以调用所有Twig_Environment中的方法。这时因为asbamboo\template\Template中魔术方法__call的作用。当访问的方法在asbamboo\template\Template中不存在时，会调用Twig_Environment中名字相同的方法。</p>
+</div>
+<div class="section" id="extension">
+<h2>扩展Extension<a class="headerlink" href="#extension" title="永久链接至标题">¶</a></h2>
+<p>template支持使用addExtension方式进行扩展。</p>
+<p><a class="reference internal" href="extension/template.html"><span class="doc">TemplateExtension</span></a></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+$Extension = new TemplateExtension;
+$this-&gt;addExtension($Extension);
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="extension/template.html" title="template extension 示例"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../security/gurad/authorization.html" title="权限设置"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

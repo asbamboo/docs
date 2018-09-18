@@ -1,3 +1,5 @@
+.. _security_gurad_authorization:
+
 权限设置
 =====================
 
@@ -39,8 +41,8 @@ asbamboo\\security\\gurad\\authorization\\Authenticator用来控制访问权限�
             use asbamboo\security\gurad\authorization\RuleCollection;
             
             $RuleCollection = new RuleCollection();
-            $RuleCollection->add(new Role('1==1'));
-            $RuleCollection->add(new Role('1==2'));
+            $RuleCollection->add(new Rule('1==1'));
+            $RuleCollection->add(new Rule('1==2'));
 
 权限使用
 ------------------------

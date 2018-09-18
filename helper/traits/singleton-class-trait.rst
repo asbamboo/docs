@@ -1,3 +1,5 @@
+.. _helper_traits_singleton_class:
+
 单例模式的公共trait
 =====================
 
