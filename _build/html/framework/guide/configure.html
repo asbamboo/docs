@@ -1,0 +1,161 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>配置 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="autoload自动加载器" href="../../autoload/index.html" />
+    <link rel="prev" title="Hello word" href="start.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="start.html" title="Hello word"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="start.html"
+                        title="上一章">Hello word</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../../autoload/index.html"
+                        title="下一章">autoload自动加载器</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>配置<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>其实这一个章节说明的配置方法，并不是说你一定要这样做。如果你对php很熟悉并且掌握了 <a class="reference external" href="https://github.com/asbamboo/framework">asbamboo/framework</a> 的编程思想的话，你应该有多种读取配置信息的方式。</p>
+<p>使用 <a class="reference external" href="https://github.com/asbamboo/framework">asbamboo/framework</a> 开发一个web应用系统，第一步应该创建一个实现asbamboo\framework\kernel\KernelInterface的类，在 <a class="reference external" href="https://github.com/asbamboo/framework">asbamboo/framework</a> 中内置了抽象类asbamboo\framework\kernel\KernelAbstract帮助快速创建这个类。本指南假定我们的系统基于KernelAbstract进行下一步开发。</p>
+<div class="section" id="id2">
+<h2>指定配置文件<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>如果基于KernelAbstract实现这个类的话需要添加两个方法getProjectDir返回当前项目的根目录，getConfigPath返回主配置文件路径。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard;
+
+use asbamboo\framework\kernel\KernelAbstract;
+
+class AppKernel extends KernelAbstract
+{
+    /**
+     *
+     * 项目根目录
+     */
+    public function getProjectDir(): string
+    {
+        return __DIR__;
+    }
+
+    /**
+     * 主配置文件
+     */
+    public function getConfigPath() : string
+    {
+        return __DIR__ . &#39;/config/config.php&#39; ;
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>配置文件说明<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>AppKernel::getConfigPath() 返回的配置文件需要返回一个数组该数组被用来生成一个asbamboo\di\ServiceMappingCollection对象，作为容器[ <a class="reference external" href="https://github.com/asbamboo/di">asbamboo/di</a> ]的基础service信息。配置信息示例:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>use asbamboo\framework\config\RouterConfig;
+use asbamboo\framework\template\Template;
+
+return [
+    RouterConfig::class         =&gt; [&#39;init_params&#39; =&gt; [&#39;configs&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;router.php&#39;]],
+    Template::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;template_dir&#39; =&gt; [dirname(__DIR__) . DIRECTORY_SEPARATOR . &#39;view&#39;]]],
+];
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>根据数组的每一行生成一个asbamboo\di\ServiceMapping信息, 配置信息说明：</dt>
+<dd><ul class="first last simple">
+<li>数组的值id表示服务的唯一标识</li>
+<li>数组的值class表示服务对应的类</li>
+<li>数组的值init_params服务初始化时构造方法接收的参数</li>
+<li>数组的键如果是一个自定义的字符串，并且数组的值没有id这个键，那么这个数组的键等于id</li>
+<li>数组的键正好是一个class的名字，同时数组的值没有class这个键，那么这个数组的键等于class</li>
+<li>数组的值class实现了asbamboo\framework\config\ConfigInterface那么读取配置信息时，系统会执行它的configure方法。</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="start.html" title="Hello word"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

@@ -57,6 +57,7 @@ Hello word
     可以看到终端输出了几行系统内置的命令
 
     ::
+
         asbamboo:console:lists 列出所有命令
         asbamboo:console:help  获取帮助信息
         ...
