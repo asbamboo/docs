@@ -10,7 +10,9 @@ asbamboo/framwork是一个基于MVC模式的、模块化的、很容易扩展的
 .. toctree::
    
     guide/start
+    guide/desc
     guide/configure
+    guide/route
 
 
 .. _asbamboo/framework-standard: https://github.com/asbamboo/framework-standard
