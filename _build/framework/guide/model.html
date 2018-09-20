@@ -72,6 +72,428 @@
             
   <div class="section" id="id1">
 <h1>建立数据模型<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>数据模型的建立，依赖 <a class="reference external" href="../../database/index">asbamboo/database</a> 模块。</p>
+<div class="section" id="postentity">
+<h2>创建实体类postEntity<a class="headerlink" href="#postentity" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\model\post;
+
+use asbamboo\frameworkStandard\model\user\UserEntity;
+
+/**
+ * @Entity
+ * @Table(name=&quot;t_post&quot;)
+ */
+class PostEntity
+{
+    /**
+     * @var integer
+     *
+     * @Id
+     * @Column(type=&quot;integer&quot;)
+     * @GeneratedValue
+     */
+    private $post_seq;
+
+
+    /**
+     * @var UserEntity
+     *
+     * @ManyToOne(targetEntity=&quot;asbamboo\frameworkStandard\model\user\UserEntity&quot;)
+     * @JoinColumn(name=&quot;user_seq&quot;, referencedColumnName=&quot;user_seq&quot;)
+     */
+    private $User;
+
+    /**
+     * @var string
+     *
+     * @Column(type=&quot;string&quot;)
+     */
+    private $post_title;
+
+    /**
+     * @var string
+     *
+     * @Column(type=&quot;string&quot;)
+     */
+    private $post_content;
+
+    /**
+     * @var integer
+     *
+     * @Column(type=&quot;integer&quot;)
+     */
+    private $post_create_time;
+
+    /**
+     *
+     * @var integer
+     *
+     * @Column(type=&quot;integer&quot;)
+     */
+    private $post_update_time;
+
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this-&gt;post_create_time = time();
+        $this-&gt;post_update_time = time();
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getPostSeq()
+    {
+        return $this-&gt;post_seq;
+    }
+
+    /**
+     *
+     * @param UserEntity $user
+     * @return \asbamboo\frameworkStandard\model\post\PostEntity
+     */
+    public function setUser(UserEntity $User)
+    {
+        $this-&gt;User = $User;
+        return $this;
+    }
+
+    /**
+     *
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function getUser()
+    {
+        return $this-&gt;User;
+    }
+
+    /**
+     *
+     * @param string $post_title
+     * @return \asbamboo\frameworkStandard\model\post\PostEntity
+     */
+    public function setPostTitle(string $post_title)
+    {
+        $this-&gt;post_title   = $post_title;
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getPostTitle()
+    {
+        return $this-&gt;post_title;
+    }
+
+    /**
+     *
+     * @param string $post_content
+     * @return \asbamboo\frameworkStandard\model\post\PostEntity
+     */
+    public function setPostContent(string $post_content)
+    {
+        $this-&gt;post_content = $post_content;
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getPostContent()
+    {
+        return $this-&gt;post_content;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getPostCreateTime()
+    {
+        return $this-&gt;post_create_time;
+    }
+
+    /**
+     *
+     * @param int $time
+     * @return \asbamboo\frameworkStandard\model\post\PostEntity
+     */
+    public function setPostUpdateTime(int $time)
+    {
+        $this-&gt;post_update_time  = $time;
+        return $this;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getPostUpdateTime()
+    {
+        return $this-&gt;post_update_time;
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="userentity">
+<h2>创建实体类userEntity<a class="headerlink" href="#userentity" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\model\user;
+
+/**
+ * @Entity
+ * @Table(name=&quot;t_user&quot;)
+ */
+class UserEntity
+{
+    /**
+     * @var int
+     *
+     * @Id
+     * @Column(type=&quot;integer&quot;)
+     * @GeneratedValue
+     */
+    private $user_seq;
+
+    /**
+     * @var string
+     *
+     * @Column(type=&quot;string&quot;, unique=true)
+     */
+    private $user_id;
+
+    /**
+     * @var string
+     *
+     * @Column(type=&quot;string&quot;)
+     */
+    private $user_password;
+
+    /**
+     * @var int
+     *
+     * @Column(type=&quot;integer&quot;)
+     */
+    private $user_type;
+
+    /**
+     *
+     * @return number
+     */
+    public function getUserSeq()
+    {
+        return $this-&gt;user_seq;
+    }
+
+    /**
+     *
+     * @param string $user_id
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function setUserId(string $user_id)
+    {
+        $this-&gt;user_id = $user_id;
+        $this-&gt;setLoginName($user_id);
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this-&gt;user_id;
+    }
+
+    /**
+     *
+     * @param string $user_password
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function setUserPassword(string $user_password)
+    {
+        $this-&gt;user_password    = password_hash($user_password, PASSWORD_BCRYPT);
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getUserPassword()
+    {
+        return $this-&gt;user_password;
+    }
+
+    /**
+     *
+     * @param string $user_type
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function setUserType(string $user_type)
+    {
+        $this-&gt;user_type    = $user_type;
+        $this-&gt;setRoles([$user_type]);
+        return $this;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getUserType()
+    {
+        return $this-&gt;user_type;
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>创建文件<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>./data/db.sqlite</p>
+<p>只需要新建一个空的文件就可以，配置文件指定sqlite类型数据库，将数据存储在这个文件中</p>
+</div>
+<div class="section" id="id3">
+<h2>注册数据库操作配置信息<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><dl class="first docutils">
+<dt>创建数据库配置信息./config/db.php</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return [
+    &#39;connection&#39;    =&gt; [
+        &#39;driver&#39;    =&gt; &#39;pdo_sqlite&#39;,
+        &#39;path&#39;      =&gt;  dirname(__DIR__) . &#39;/data/db.sqlite&#39;,
+    ],&#39;metadata&#39;    =&gt; [
+        &#39;path&#39;      =&gt; dirname(__DIR__) . &#39;/model&#39;,
+        &#39;type&#39;      =&gt; &#39;annotation&#39;,
+    ],&#39;is_dev&#39;      =&gt; true,
+];
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p class="first">使用asbamboo\framework\config\DbConfig服务注册数据库配置信息.在主数据库配置文件./config/config.php添加asbamboo\framework\config\DbConfig服务。</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+return [
+    ...
+
+    DbConfig::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;configs&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;db.php&#39;]],
+
+    ...
+];
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="id4">
+<h2>数据库模型和配置信息设置以后操作方式如下<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">添加新数据</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\database\FactoryInterface;
+
+...
+
+$UserEntity         = new UserEntity();
+$UserEntity-&gt;setUserId($user_id);
+$UserEntity-&gt;setUserPassword($confirm_password);
+$UserEntity-&gt;setUserType(UserConstant::TYPE_ADMIN);
+
+$DbManager = $this-&gt;container-&gt;get(FactoryInterface::class)-&gt;getManager();
+$DbManager-&gt;persist($UserEntity);
+$DbManager-&gt;flush();
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">查询列表</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\database\FactoryInterface;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+
+...
+
+$DbManager = $this-&gt;container-&gt;get(FactoryInterface::class)-&gt;getManager();
+$DbManager-&gt;getRepository(UserEntity::class)-&gt;findBy([]);
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">查询单个数据</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use asbamboo\database\FactoryInterface;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+
+...
+
+$DbManager = $this-&gt;container-&gt;get(FactoryInterface::class)-&gt;getManager();
+$DbManager-&gt;getRepository(UserEntity::class)-&gt;findOneBy([&#39;user_id&#39; =&gt; $user_id]);
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">修改数据</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use \asbamboo\frameworkDemo\model\user\Constant AS UserConstant;
+use asbamboo\database\FactoryInterface;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+
+...
+
+$DbManager = $this-&gt;container-&gt;get(FactoryInterface::class)-&gt;getManager();
+$UserEntity = $DbManager-&gt;getRepository(UserEntity::class)-&gt;findOneBy([&#39;user_id&#39; =&gt; $user_id]);
+
+$UserEntity-&gt;setUserPassword($user_password);
+$UserEntity-&gt;setUserType(UserConstant::TYPE_USER);
+$DbManager-&gt;flush();
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">删除数据</p>
+<blockquote>
+<div><div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+
+use \asbamboo\frameworkDemo\model\user\Constant AS UserConstant;
+use asbamboo\database\FactoryInterface;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+
+...
+
+$DbManager = $this-&gt;container-&gt;get(FactoryInterface::class)-&gt;getManager();
+$UserEntity = $DbManager-&gt;getRepository(UserEntity::class)-&gt;findOneBy([&#39;user_id&#39; =&gt; $user_id]);
+$DbManager-&gt;remove($UserEntity);
+$DbManager-&gt;flush();
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
 </div>
 
 
