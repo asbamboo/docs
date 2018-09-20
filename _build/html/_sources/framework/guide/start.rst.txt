@@ -64,5 +64,8 @@ Hello word
      
     这是因为./bin/console不带参数的情况下，默认执行asbamboo:console:lists命令
 
+
+`下面我们将一步一步完成demo程序`
+
 .. _asbamboo/framework-standard: https://github.com/asbamboo/framework-standard
 .. _asbamboo/framework: https://github.com/asbamboo/framework

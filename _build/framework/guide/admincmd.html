@@ -1,0 +1,425 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>开始第一个命令行程序[admin管理工具] &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="autoload自动加载器" href="../../autoload/index.html" />
+    <link rel="prev" title="本指南准备实现的demo说明" href="desc.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="desc.html" title="本指南准备实现的demo说明"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="desc.html"
+                        title="上一章">本指南准备实现的demo说明</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../../autoload/index.html"
+                        title="下一章">autoload自动加载器</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="admin">
+<h1>开始第一个命令行程序[admin管理工具]<a class="headerlink" href="#admin" title="永久链接至标题">¶</a></h1>
+<p>在 <a class="reference external" href="https://github.com/asbamboo/framework-strandard">asbamboo/framework-strandard</a> 中，添加命令行程序只需要在 ./command 目录下创建相应的脚本文件。命令行程序 <a class="reference external" href="command">console</a> 入口文件会解析该目录下的脚本文件，并将这个脚本注册到命令行程序服务中去。</p>
+<div class="section" id="admincommand">
+<h2>创建AdminCommand文件<a class="headerlink" href="#admincommand" title="永久链接至标题">¶</a></h2>
+<p>路径: /asbamboo-study/command/AdminCommand.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\command;
+
+use asbamboo\console\ProcessorInterface;
+use asbamboo\console\command\CommandAbstract;
+use asbamboo\di\ContainerAwareTrait;
+use asbamboo\framework\Constant;
+use asbamboo\database\Factory;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+use asbamboo\frameworkStandard\model\user\Constant AS UserConstant;
+use asbamboo\database\FactoryInterface;
+use asbamboo\database\ManagerInterface;
+
+class AdminCommand extends CommandAbstract
+{
+    use ContainerAwareTrait;
+
+    /**
+     *
+     * @var ManagerInterface
+     */
+    private $DbManager;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     */
+    public function __construct(FactoryInterface $Db)
+    {
+        parent::__construct();
+        $this-&gt;DbManager   = $Db-&gt;getManager();
+        $this-&gt;AddOption(&#39;list&#39;, null, &#39;列出所有管理员账号&#39;, &#39;l&#39;);
+        $this-&gt;AddOption(&#39;insert&#39;, null, &#39;添加新的管理员账号&#39;, &#39;i&#39;);
+    }
+
+    /**
+     * 列出所有管理员账号
+     *
+     * @param ProcessorInterface $Processor
+     */
+    private function lists(ProcessorInterface $Processor) : void
+    {
+        /**
+         *
+         * @var Factory $Db
+         */
+        $UserEntitys    = $this-&gt;DbManager-&gt;getRepository(UserEntity::class)-&gt;findBy([&#39;user_type&#39; =&gt; UserConstant::TYPE_ADMIN]);
+        foreach($UserEntitys AS $UserEntity){
+            $Processor-&gt;output()-&gt;print($UserEntity-&gt;getUserId(), &quot;\t&quot;);
+        }
+    }
+
+    /**
+     * 创建新的管理员账号
+     *
+     * @param ProcessorInterface $Processor
+     */
+    private function insert(ProcessorInterface $Processor) : void
+    {
+        /**
+         * 用户输入参数
+         */
+        $user_id            = $Processor-&gt;input()-&gt;prompt(&#39;请输入管理员账号:&#39;);
+        $user_password      = $Processor-&gt;input()-&gt;prompt(&#39;请输入管理员密码:&#39;);
+        $confirm_password   = $Processor-&gt;input()-&gt;prompt(&#39;请确认管理员密码:&#39;);
+
+        /**
+         * 验证
+         */
+        check:
+        if($user_password != $confirm_password){
+            $Processor-&gt;output()-&gt;print(&#39;两次密码输入不一致,请重新确认。&#39;, &quot;\r\n&quot;);
+            $user_password      = $Processor-&gt;input()-&gt;prompt(&#39;请输入管理员密码:&#39;);
+            $confirm_password   = $Processor-&gt;input()-&gt;prompt(&#39;请确认管理员密码:&#39;);
+            goto check;
+        }
+
+        /**
+         * 管理员实例
+         *
+         * @var \asbamboo\frameworkStandard\model\user\UserEntity $UserEntity
+         */
+        $UserEntity         = new UserEntity();
+        $UserEntity-&gt;setUserId($user_id);
+        $UserEntity-&gt;setUserPassword($confirm_password);
+        $UserEntity-&gt;setUserType(UserConstant::TYPE_ADMIN);
+
+        /**
+         *
+         * @var Factory $Db
+         */
+        $this-&gt;DbManager-&gt;persist($UserEntity);
+        $this-&gt;DbManager-&gt;flush();
+        $Processor-&gt;output()-&gt;print(&#39;管理员添加成功&#39;, &quot;\r\n&quot;);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::exec()
+     */
+    public function exec(ProcessorInterface $Processor)
+    {
+        if($this-&gt;getOptionValueByProcessor(&#39;list&#39;, $Processor)){
+            return $this-&gt;lists($Processor);
+        }
+        if($this-&gt;getOptionValueByProcessor(&#39;insert&#39;, $Processor)){
+            return $this-&gt;insert($Processor);
+        }
+        return $this-&gt;insert($Processor);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::desc()
+     */
+    public function desc() : string
+    {
+        return &#39;管理员账号管理&#39;;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::help()
+     */
+    public function help() : string
+    {
+        $console    = $_SERVER[&#39;SCRIPT_FILENAME&#39;];
+
+        return &lt;&lt;&lt;HELP
+    注意:选项insert和list不能同时使用,如果命令行不带任何参数，则表示省略insert选项。
+    例: 添加新的管理员账号
+        php {$console} {$this-&gt;getName()} --insert
+        php {$console} {$this-&gt;getName()}
+    例: 管理员账号列表
+        php {$console} {$this-&gt;getName()} --list
+
+HELP;
+    }
+
+    /**
+     * 定义命令行名称
+     *
+     * @return string
+     */
+    public function getName() : string
+    {
+       return &#39;admin&#39;;
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="construct">
+<h2>构造函数__construct说明<a class="headerlink" href="#construct" title="永久链接至标题">¶</a></h2>
+<dl class="docutils">
+<dt>这个命令行脚本文件继承了抽象类asbamboo\console\command\CommandAbstract，有两个重要的方法</dt>
+<dd><ul class="first last simple">
+<li>addOption 添加可选选项列表</li>
+<li>addArgument 添加参数列表</li>
+</ul>
+</dd>
+</dl>
+<p>构造函数通常应该通过调用这两个方法为脚本添加参数列表和选项列表</p>
+<p>AdminCommand中添加了选项列表</p>
+<blockquote>
+<div><ul class="simple">
+<li>list 没有默认值 列出所有管理员账号 简写形式 l</li>
+<li>insert 没有默认值 添加新的管理员账号 简写形式 i</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id1">
+<h2>脚本文件的方法说明<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>getName 命令行脚本程序的名称</li>
+<li>help 命令行脚本程序的帮助详情信息[./bin/console admin –help] 会展示admin脚本的帮助信息</li>
+<li>desc 命令行脚本程序的简要说明[./bin/console asbamboo:console:lists] 会展示简要说明</li>
+<li>exec 这样是重要方法，脚本执行时调用的方法。可以从参数$Processor中获取输入信息,和处理结果输出。</li>
+<li>getOptionValueByProcessor 这个方法从CommandAbstract继承用来获取选项的值</li>
+<li>getArgumentValueByProcessor 这个方法也是从CommandAbstract继承用来获取参数的值</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>脚本执行<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>./bin/console admin -h 查看帮助信息</li>
+<li>./bin/console admin -i 添加新的管理员</li>
+<li>./bin/console admin -l 列出管理员名单</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>系统初始化脚本程序<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\command;
+
+use asbamboo\console\ProcessorInterface;
+use asbamboo\console\command\CommandAbstract;
+use asbamboo\di\ContainerAwareTrait;
+use asbamboo\framework\Constant;
+use asbamboo\database\ManagerInterface;
+use asbamboo\database\FactoryInterface;
+
+class InitCommand extends CommandAbstract
+{
+    use ContainerAwareTrait;
+
+    /**
+     *
+     * @var ManagerInterface
+     */
+    private $DbManager;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     */
+    public function __construct(FactoryInterface $Db)
+    {
+        parent::__construct();
+        $this-&gt;DbManager   = $Db-&gt;getManager();
+    }
+
+    /**
+     * 删除数据信息
+     *
+     * @param ProcessorInterface $Processor
+     */
+    private function dropDbData(ProcessorInterface $Processor) : void
+    {
+        /**
+         *
+         * @var Factory $Db
+         */
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            DROP TABLE IF EXISTS `t_user`;
+        &quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            DROP TABLE IF EXISTS `t_post`;
+        &quot;);
+    }
+
+    /**
+     * 创建初始数据表
+     *
+     * @param ProcessorInterface $Processor
+     */
+    private function createDbData(ProcessorInterface $Processor) : void
+    {
+        /**
+         *
+         * @var Factory $Db
+         */
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            CREATE TABLE `t_user`(`user_seq` INTEGER PRIMARY KEY, `user_id`, `user_password`, `user_type`);
+        &quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            CREATE TABLE `t_post`(`post_seq` INTEGER PRIMARY KEY, `post_title`, `post_content`, `user_seq`, `post_create_time`, `post_update_time`);
+        &quot;);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::exec()
+     */
+    public function exec(ProcessorInterface $Processor)
+    {
+        if($Processor-&gt;input()-&gt;prompt(&#39;初始化将导致以后数据被清除，你确定要初始化系统吗?请回复yes或no: &#39;) == &#39;yes&#39;){
+            $Processor-&gt;output()-&gt;print(&#39;正在删除原有数据信息...&#39;, &quot;\r\n&quot;);
+            $this-&gt;dropDbData($Processor);
+            $Processor-&gt;output()-&gt;print(&#39;正在重新创建初始数据信息...&#39;, &quot;\r\n&quot;);
+            $this-&gt;createDbData($Processor);
+            $Processor-&gt;output()-&gt;print(&#39;系统初始化成功.&#39;, &quot;\r\n&quot;);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::help()
+     */
+    public function help(): string
+    {
+        $console    = $_SERVER[&#39;SCRIPT_FILENAME&#39;];
+
+        return &lt;&lt;&lt;HELP
+    例: php {$console} {$this-&gt;getName()}
+
+HELP;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::desc()
+     */
+    public function desc(): string
+    {
+        return &#39;系统初始化&#39;;
+    }
+
+    /**
+     * 定义命令行名称
+     *
+     * @return string
+     */
+    public function getName() : string
+    {
+        return &#39;init&#39;;
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="desc.html" title="本指南准备实现的demo说明"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

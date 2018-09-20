@@ -1,0 +1,223 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>路由配置 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>路由配置<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>路由配置：配置http请求的url与应用程序之间的关系。在 <a class="reference external" href="https://github.com/asbamboo/framework-standard">asbamboo/framework-standard</a> 里面路由配置信息是 ./config/router.php中返回的一个数组:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return  [
+    [&#39;id&#39; =&gt; &#39;home&#39;, &#39;path&#39; =&gt; &#39;/&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Home:index&#39;],
+];
+</pre></div>
+</div>
+<div class="section" id="id2">
+<h2>配置文件解释<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>数组中键的含义如下:</p>
+<blockquote>
+<div><ul class="simple">
+<li>id: 路由的唯一标识</li>
+<li>path: url请求的path</li>
+<li>callback: 执行http请求的方法</li>
+<li>default_params: callback方法的默认值</li>
+<li>options: 其他选项信息</li>
+</ul>
+</div></blockquote>
+<p>这个路由配置文件被加载到主配置文件中，其中的配置信息被当做服务asbamboo\framework\config\RouterConfig的构造方法的参数使用。</p>
+<p>./config/config.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\framework\config\RouterConfig;
+use asbamboo\framework\template\Template;
+
+return [
+    RouterConfig::class         =&gt; [&#39;init_params&#39; =&gt; [&#39;configs&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;router.php&#39;]],
+    Template::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;template_dir&#39; =&gt; [dirname(__DIR__) . DIRECTORY_SEPARATOR . &#39;view&#39;]]],
+];
+</pre></div>
+</div>
+<p>RouterConfig解析器的作用是，通过给定的配置信息为到服务 asbamboo\router\interface 生成路由集合信息。</p>
+</div>
+<div class="section" id="http-callback">
+<h2>执行http请求的方法[callback]<a class="headerlink" href="#http-callback" title="永久链接至标题">¶</a></h2>
+<p>配置信息中callback键指定的并不是一个callable类型的值，而应该传递一个字符串(格式为class:method),因为这个配置信息是用asbamboo\framework\config\RouterConfig去解析的。</p>
+</div>
+<div class="section" id="urlpath">
+<h2>url请求的path<a class="headerlink" href="#urlpath" title="永久链接至标题">¶</a></h2>
+<p>url请求的path被允许设置变量值如:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return  [
+    ...
+    [&#39;id&#39; =&gt; &#39;user_update&#39;, &#39;path&#39; =&gt; &#39;/{user_id}/user-update&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkDemo\\controller\\User:update&#39;],
+...
+];
+</pre></div>
+</div>
+<p>其中user_id是一个变量，是update方法的一个参数</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkDemo\controller;
+
+class User extends ControllerAbstract
+{
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function update($user_id) : ResponseInterface
+    {
+       ...
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="callback-default-params">
+<h2>callback方法的默认值[default_params]<a class="headerlink" href="#callback-default-params" title="永久链接至标题">¶</a></h2>
+<p>下面我们尝试将user_id设置一个默认值:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return  [
+    ...
+    [&#39;id&#39; =&gt; &#39;user_update&#39;, &#39;path&#39; =&gt; &#39;/{user_id}/user-update&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkDemo\\controller\\User:update&#39;, &#39;default_params&#39;=&gt;[&#39;user_id&#39;=&gt;1]],
+...
+];
+</pre></div>
+</div>
+<p>这样当我们调用asbamboo\router\Router::generateUrl(‘user_update’)没有传递$params参数是会根据默认值生成的url为: /1/user_update</p>
+</div>
+<div class="section" id="options">
+<h2>其他选项信息 options<a class="headerlink" href="#options" title="永久链接至标题">¶</a></h2>
+<p>暂时,在asbamboo内部还没有使用options信息</p>
+</div>
+<div class="section" id="url">
+<h2>url生成器<a class="headerlink" href="#url" title="永久链接至标题">¶</a></h2>
+<p>关于url的匹配可能都是在框架内部执行，但是url生成，你可能会经常碰到。这里给出 <a class="reference external" href="https://github.com/asbamboo/framework-demo">asbamboo/framework-demo</a> 中的两个例子:</p>
+<p>第一个是controller中的使用</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\framework\controller;
+
+abstract class ControllerAbstract implements ControllerInterface
+{
+    ...
+
+    protected function redirect(string $route_id, array $route_params = null)
+    {
+        $Router     = $this-&gt;Container-&gt;get(RouterInterface::class);
+        $target_uri = $Router-&gt;generateUrl($route_id, $route_params);
+        return new RedirectResponse($target_uri);
+    }
+}
+</pre></div>
+</div>
+<p>另一个是是view中的使用（/asbamboo/framework-demo/view/_include/top.html.tpl）</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">nav</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar navbar-expand-lg navbar-light bg-light rounded&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-toggler&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="n">data</span><span class="o">-</span><span class="n">toggle</span><span class="o">=</span><span class="s2">&quot;collapse&quot;</span> <span class="n">data</span><span class="o">-</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;#navbarsExample10&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">controls</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">expanded</span><span class="o">=</span><span class="s2">&quot;false&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Toggle navigation&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-toggler-icon&quot;</span><span class="o">&gt;&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;collapse navbar-collapse justify-content-md-center&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-nav&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;home&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;home&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">asbamboo</span> <span class="n">demo</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">has_roles</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;admin&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;post&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;post&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">文章管理</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">has_roles</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;user&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;user&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">人员管理</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="s1">&#39;anonymous&#39;</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">getRoles</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;login&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">登陆</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="o">&gt;</span><span class="n">当前用户</span><span class="p">:{{</span> <span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">getLoginName</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;logout&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">注销</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+      <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">nav</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>
