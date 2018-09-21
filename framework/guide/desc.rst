@@ -18,13 +18,13 @@
 
 :doc:`建立数据模型 <model>`
 
-创建init命令
+:doc:`创建init命令 <initcmd>`
 
-创建admin命令
+:doc:`创建admin命令 <admincmd>`
 
-修改html皮肤
+:doc:`修改html皮肤布局 <layout>`
 
-创建用户管理程序
+:doc:`创建用户管理程序 <user>`
 
 创建文章管理程序
 
@@ -49,7 +49,7 @@
 
 :doc:`数据操作 <database>`
 
-* 视图模板
+:doc:`视图模板的使用 <template>`
 
 :doc:`事件监听 <../../event/index>`
 

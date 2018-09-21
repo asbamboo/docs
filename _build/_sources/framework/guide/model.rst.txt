@@ -238,7 +238,6 @@
         public function setUserId(string $user_id)
         {
             $this->user_id = $user_id;
-            $this->setLoginName($user_id);
             return $this;
         }
     
@@ -279,7 +278,6 @@
         public function setUserType(string $user_type)
         {
             $this->user_type    = $user_type;
-            $this->setRoles([$user_type]);
             return $this;
         }
     

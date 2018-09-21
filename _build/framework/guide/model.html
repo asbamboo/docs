@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/translations.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
-    <link rel="next" title="开始第一个命令行程序[admin管理工具]" href="admincmd.html" />
+    <link rel="next" title="创建系统初始化工具[init]命令" href="initcmd.html" />
     <link rel="prev" title="本指南准备实现的demo说明" href="desc.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
           <a href="../../genindex.html" title="总目录"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="admincmd.html" title="开始第一个命令行程序[admin管理工具]"
+          <a href="initcmd.html" title="创建系统初始化工具[init]命令"
              accesskey="N">下一页</a> |</li>
         <li class="right" >
           <a href="desc.html" title="本指南准备实现的demo说明"
@@ -50,8 +50,8 @@
   <p class="topless"><a href="desc.html"
                         title="上一章">本指南准备实现的demo说明</a></p>
   <h4>下一个主题</h4>
-  <p class="topless"><a href="admincmd.html"
-                        title="下一章">开始第一个命令行程序[admin管理工具]</a></p>
+  <p class="topless"><a href="initcmd.html"
+                        title="下一章">创建系统初始化工具[init]命令</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <form class="search" action="../../search.html" method="get">
@@ -302,7 +302,6 @@ class UserEntity
     public function setUserId(string $user_id)
     {
         $this-&gt;user_id = $user_id;
-        $this-&gt;setLoginName($user_id);
         return $this;
     }
 
@@ -343,7 +342,6 @@ class UserEntity
     public function setUserType(string $user_type)
     {
         $this-&gt;user_type    = $user_type;
-        $this-&gt;setRoles([$user_type]);
         return $this;
     }
 
@@ -509,7 +507,7 @@ $DbManager-&gt;flush();
           <a href="../../genindex.html" title="总目录"
              >索引</a></li>
         <li class="right" >
-          <a href="admincmd.html" title="开始第一个命令行程序[admin管理工具]"
+          <a href="initcmd.html" title="创建系统初始化工具[init]命令"
              >下一页</a> |</li>
         <li class="right" >
           <a href="desc.html" title="本指南准备实现的demo说明"

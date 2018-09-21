@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>管理员admin账号管理工具 &#8212; asbamboo php framework  文档</title>
+    <title>创建系统初始化工具[init]命令 &#8212; asbamboo php framework  文档</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/translations.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
-    <link rel="next" title="autoload自动加载器" href="../../autoload/index.html" />
-    <link rel="prev" title="创建系统初始化工具[init]命令" href="initcmd.html" /> 
+    <link rel="next" title="开始第一个命令行程序[admin管理工具]" href="admincmd.html" />
+    <link rel="prev" title="建立数据模型" href="model.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,10 +35,10 @@
           <a href="../../genindex.html" title="总目录"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="../../autoload/index.html" title="autoload自动加载器"
+          <a href="admincmd.html" title="开始第一个命令行程序[admin管理工具]"
              accesskey="N">下一页</a> |</li>
         <li class="right" >
-          <a href="initcmd.html" title="创建系统初始化工具[init]命令"
+          <a href="model.html" title="建立数据模型"
              accesskey="P">上一页</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
@@ -47,11 +47,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>上一个主题</h4>
-  <p class="topless"><a href="initcmd.html"
-                        title="上一章">创建系统初始化工具[init]命令</a></p>
+  <p class="topless"><a href="model.html"
+                        title="上一章">建立数据模型</a></p>
   <h4>下一个主题</h4>
-  <p class="topless"><a href="../../autoload/index.html"
-                        title="下一章">autoload自动加载器</a></p>
+  <p class="topless"><a href="admincmd.html"
+                        title="下一章">开始第一个命令行程序[admin管理工具]</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>快速搜索</h3>
     <form class="search" action="../../search.html" method="get">
@@ -70,23 +70,19 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="admin">
-<h1>管理员admin账号管理工具<a class="headerlink" href="#admin" title="永久链接至标题">¶</a></h1>
-<p>admin 命令程序用于创建和管理系统超级管理员的账号。</p>
+  <div class="section" id="init">
+<h1>创建系统初始化工具[init]命令<a class="headerlink" href="#init" title="永久链接至标题">¶</a></h1>
+<p>init 命令用来初始化系统程序。负责创建系统所需的数据表，和初始的数据信息。</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
 namespace asbamboo\frameworkStandard\command;
 
 use asbamboo\console\ProcessorInterface;
 use asbamboo\console\command\CommandAbstract;
 use asbamboo\di\ContainerAwareTrait;
-use asbamboo\framework\Constant;
-use asbamboo\database\Factory;
-use asbamboo\frameworkStandard\model\user\UserEntity;
-use asbamboo\frameworkStandard\model\user\Constant AS UserConstant;
-use asbamboo\database\FactoryInterface;
 use asbamboo\database\ManagerInterface;
+use asbamboo\database\FactoryInterface;
 
-class AdminCommand extends CommandAbstract
+class InitCommand extends CommandAbstract
 {
     use ContainerAwareTrait;
 
@@ -104,69 +100,44 @@ class AdminCommand extends CommandAbstract
     {
         parent::__construct();
         $this-&gt;DbManager   = $Db-&gt;getManager();
-        $this-&gt;AddOption(&#39;list&#39;, null, &#39;列出所有管理员账号&#39;, &#39;l&#39;);
-        $this-&gt;AddOption(&#39;insert&#39;, null, &#39;添加新的管理员账号&#39;, &#39;i&#39;);
     }
 
     /**
-     * 列出所有管理员账号
+     * 删除数据信息
      *
      * @param ProcessorInterface $Processor
      */
-    private function lists(ProcessorInterface $Processor) : void
+    private function dropDbData(ProcessorInterface $Processor) : void
     {
         /**
          *
          * @var Factory $Db
          */
-        $UserEntitys    = $this-&gt;DbManager-&gt;getRepository(UserEntity::class)-&gt;findBy([&#39;user_type&#39; =&gt; UserConstant::TYPE_ADMIN]);
-        foreach($UserEntitys AS $UserEntity){
-            $Processor-&gt;output()-&gt;print($UserEntity-&gt;getUserId(), &quot;\t&quot;);
-        }
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            DROP TABLE IF EXISTS `t_user`;
+        &quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            DROP TABLE IF EXISTS `t_post`;
+        &quot;);
     }
 
     /**
-     * 创建新的管理员账号
+     * 创建初始数据表
      *
      * @param ProcessorInterface $Processor
      */
-    private function insert(ProcessorInterface $Processor) : void
+    private function createDbData(ProcessorInterface $Processor) : void
     {
-        /**
-         * 用户输入参数
-         */
-        $user_id            = $Processor-&gt;input()-&gt;prompt(&#39;请输入管理员账号:&#39;);
-        $user_password      = $Processor-&gt;input()-&gt;prompt(&#39;请输入管理员密码:&#39;);
-        $confirm_password   = $Processor-&gt;input()-&gt;prompt(&#39;请确认管理员密码:&#39;);
-
-        /**
-         * 验证
-         */
-        check:
-        if($user_password != $confirm_password){
-            $Processor-&gt;output()-&gt;print(&#39;两次密码输入不一致,请重新确认。&#39;, &quot;\r\n&quot;);
-            $user_password      = $Processor-&gt;input()-&gt;prompt(&#39;请输入管理员密码:&#39;);
-            $confirm_password   = $Processor-&gt;input()-&gt;prompt(&#39;请确认管理员密码:&#39;);
-            goto check;
-        }
-
-        /**
-         * 管理员实例
-         *
-         * @var \asbamboo\frameworkStandard\model\user\UserEntity $UserEntity
-         */
-        $UserEntity         = new UserEntity();
-        $UserEntity-&gt;setUserId($user_id);
-        $UserEntity-&gt;setUserPassword($confirm_password);
-        $UserEntity-&gt;setUserType(UserConstant::TYPE_ADMIN);
-
         /**
          *
          * @var Factory $Db
          */
-        $this-&gt;DbManager-&gt;persist($UserEntity);
-        $this-&gt;DbManager-&gt;flush();
-        $Processor-&gt;output()-&gt;print(&#39;管理员添加成功&#39;, &quot;\r\n&quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            CREATE TABLE `t_user`(`user_seq` INTEGER PRIMARY KEY, `user_id`, `user_password`, `user_type`);
+        &quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            CREATE TABLE `t_post`(`post_seq` INTEGER PRIMARY KEY, `post_title`, `post_content`, `user_seq`, `post_create_time`, `post_update_time`);
+        &quot;);
     }
 
     /**
@@ -176,23 +147,13 @@ class AdminCommand extends CommandAbstract
      */
     public function exec(ProcessorInterface $Processor)
     {
-        if($this-&gt;getOptionValueByProcessor(&#39;list&#39;, $Processor)){
-            return $this-&gt;lists($Processor);
+        if($Processor-&gt;input()-&gt;prompt(&#39;初始化将导致以后数据被清除，你确定要初始化系统吗?请回复yes或no: &#39;) == &#39;yes&#39;){
+            $Processor-&gt;output()-&gt;print(&#39;正在删除原有数据信息...&#39;, &quot;\r\n&quot;);
+            $this-&gt;dropDbData($Processor);
+            $Processor-&gt;output()-&gt;print(&#39;正在重新创建初始数据信息...&#39;, &quot;\r\n&quot;);
+            $this-&gt;createDbData($Processor);
+            $Processor-&gt;output()-&gt;print(&#39;系统初始化成功.&#39;, &quot;\r\n&quot;);
         }
-        if($this-&gt;getOptionValueByProcessor(&#39;insert&#39;, $Processor)){
-            return $this-&gt;insert($Processor);
-        }
-        return $this-&gt;insert($Processor);
-    }
-
-    /**
-     *
-     * {@inheritDoc}
-     * @see \asbamboo\console\command\CommandInterface::desc()
-     */
-    public function desc() : string
-    {
-        return &#39;管理员账号管理&#39;;
     }
 
     /**
@@ -200,19 +161,24 @@ class AdminCommand extends CommandAbstract
      * {@inheritDoc}
      * @see \asbamboo\console\command\CommandInterface::help()
      */
-    public function help() : string
+    public function help(): string
     {
         $console    = $_SERVER[&#39;SCRIPT_FILENAME&#39;];
 
         return &lt;&lt;&lt;HELP
-    注意:选项insert和list不能同时使用,如果命令行不带任何参数，则表示省略insert选项。
-    例: 添加新的管理员账号
-        php {$console} {$this-&gt;getName()} --insert
-        php {$console} {$this-&gt;getName()}
-    例: 管理员账号列表
-        php {$console} {$this-&gt;getName()} --list
+    例: php {$console} {$this-&gt;getName()}
 
 HELP;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::desc()
+     */
+    public function desc(): string
+    {
+        return &#39;系统初始化&#39;;
     }
 
     /**
@@ -222,7 +188,7 @@ HELP;
      */
     public function getName() : string
     {
-       return &#39;admin&#39;;
+        return &#39;init&#39;;
     }
 }
 </pre></div>
@@ -231,9 +197,8 @@ HELP;
 <div class="section" id="id1">
 <h2>命令的使用<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <ol class="arabic simple">
-<li>./bin/console admin -h 查看帮助信息</li>
-<li>./bin/console admin -i 添加新的管理员</li>
-<li>./bin/console admin -l 列出管理员名单</li>
+<li>./bin/console init -h 查看帮助</li>
+<li>./bin/console init 执行初始化操作</li>
 </ol>
 </div>
 </div>
@@ -251,10 +216,10 @@ HELP;
           <a href="../../genindex.html" title="总目录"
              >索引</a></li>
         <li class="right" >
-          <a href="../../autoload/index.html" title="autoload自动加载器"
+          <a href="admincmd.html" title="开始第一个命令行程序[admin管理工具]"
              >下一页</a> |</li>
         <li class="right" >
-          <a href="initcmd.html" title="创建系统初始化工具[init]命令"
+          <a href="model.html" title="建立数据模型"
              >上一页</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
