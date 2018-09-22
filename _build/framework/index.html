@@ -77,22 +77,72 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="guide/start.html">Hello word</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guide/desc.html">本指南准备实现的demo说明</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guide/desc.html#id1">功能</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/desc.html#id2">通过本指南你会了解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/desc.html#id1">我们将做一个具有如下功能的demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/desc.html#id2">开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/desc.html#id3">通过本指南你会了解</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="guide/configure.html">配置</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guide/configure.html#id2">指定配置文件</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/configure.html#id3">配置文件说明</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/model.html">建立数据模型</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/model.html#postentity">创建实体类postEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/model.html#userentity">创建实体类userEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/model.html#id2">创建文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/model.html#id3">注册数据库操作配置信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/model.html#id4">数据库模型和配置信息设置以后操作方式如下</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="guide/route.html">路由配置</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guide/route.html#id2">配置文件解释</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/route.html#http-callback">执行http请求的方法[callback]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/route.html#urlpath">url请求的path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/route.html#callback-default-params">callback方法的默认值[default_params]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/route.html#options">其他选项信息 options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/route.html#url">url生成器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/initcmd.html">创建系统初始化工具[init]命令</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/initcmd.html#id1">命令的使用</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/admincmd.html">管理员admin账号管理工具</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/admincmd.html#id1">命令的使用</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/layout.html">修改html布局</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/layout.html#id1">添加公共的头部文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/layout.html#id2">添加公共的布局文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/layout.html#id3">修改原来的主页，套用模板</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/user.html">创建用户管理的http处理程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/user.html#controller">创建Controller文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/user.html#id1">创建视图文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/user.html#id2">将新添加的用户管理程序注册到路由服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/user.html#url">将用户管理的入口url添加到公共模板文件中</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/post.html">创建文章管理的http处理程序</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/post.html#controller">创建Controller文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/post.html#id1">创建视图文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/post.html#id2">将新添加的文章管理程序注册到路由服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/post.html#url">将文章管理的入口url添加到公共模板文件中</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/home.html">在主页显示文章的列表</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/home.html#controller">修改controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/home.html#view">修改view</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/login.html">用户登录与注销登录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#asbamboo-security-user-userinterface">实现asbamboo\security\user\UserInterface类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#asbamboo-security-user-provider-userproviderinterface">实现 asbamboo\security\user\provider\UserProviderInterface 的类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#userinterfaceuserproviderinterface">将自定义的UserInterface和UserProviderInterface写入配置信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#id2">创建用户登录成功时的事件监听器，为了页面跳转</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#login-controller">添加login controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#id3">创建登录表单模板文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#url">将登录和登出url注册到路由信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#id4">将登录和注销相关url添加到头部文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/login.html#id5">试一试</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/auth.html">权限配置</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/auth.html#authorization">配置authorization服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/auth.html#id2">在模板的导航菜单中把没有权限的菜单隐藏</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guide/exception.html">自定义异常处理页面</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/exception.html#exception">创建通用exception模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/exception.html#codeexception">创建针对某个异常code的exception模板（如没有访问权限）</a></li>
 </ul>
 </li>
 </ul>

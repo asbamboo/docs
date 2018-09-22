@@ -1,0 +1,233 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>创建系统初始化工具[init]命令 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="开始第一个命令行程序[admin管理工具]" href="admincmd.html" />
+    <link rel="prev" title="建立数据模型" href="model.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="admincmd.html" title="开始第一个命令行程序[admin管理工具]"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="model.html" title="建立数据模型"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="model.html"
+                        title="上一章">建立数据模型</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="admincmd.html"
+                        title="下一章">开始第一个命令行程序[admin管理工具]</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="init">
+<h1>创建系统初始化工具[init]命令<a class="headerlink" href="#init" title="永久链接至标题">¶</a></h1>
+<p>init 命令用来初始化系统程序。负责创建系统所需的数据表，和初始的数据信息。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\command;
+
+use asbamboo\console\ProcessorInterface;
+use asbamboo\console\command\CommandAbstract;
+use asbamboo\di\ContainerAwareTrait;
+use asbamboo\database\ManagerInterface;
+use asbamboo\database\FactoryInterface;
+
+class InitCommand extends CommandAbstract
+{
+    use ContainerAwareTrait;
+
+    /**
+     *
+     * @var ManagerInterface
+     */
+    private $DbManager;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     */
+    public function __construct(FactoryInterface $Db)
+    {
+        parent::__construct();
+        $this-&gt;DbManager   = $Db-&gt;getManager();
+    }
+
+    /**
+     * 删除数据信息
+     *
+     * @param ProcessorInterface $Processor
+     */
+    private function dropDbData(ProcessorInterface $Processor) : void
+    {
+        /**
+         *
+         * @var Factory $Db
+         */
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            DROP TABLE IF EXISTS `t_user`;
+        &quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            DROP TABLE IF EXISTS `t_post`;
+        &quot;);
+    }
+
+    /**
+     * 创建初始数据表
+     *
+     * @param ProcessorInterface $Processor
+     */
+    private function createDbData(ProcessorInterface $Processor) : void
+    {
+        /**
+         *
+         * @var Factory $Db
+         */
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            CREATE TABLE `t_user`(`user_seq` INTEGER PRIMARY KEY, `user_id`, `user_password`, `user_type`);
+        &quot;);
+        $this-&gt;DbManager-&gt;getConnection()-&gt;exec(&quot;
+            CREATE TABLE `t_post`(`post_seq` INTEGER PRIMARY KEY, `post_title`, `post_content`, `user_seq`, `post_create_time`, `post_update_time`);
+        &quot;);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::exec()
+     */
+    public function exec(ProcessorInterface $Processor)
+    {
+        if($Processor-&gt;input()-&gt;prompt(&#39;初始化将导致以后数据被清除，你确定要初始化系统吗?请回复yes或no: &#39;) == &#39;yes&#39;){
+            $Processor-&gt;output()-&gt;print(&#39;正在删除原有数据信息...&#39;, &quot;\r\n&quot;);
+            $this-&gt;dropDbData($Processor);
+            $Processor-&gt;output()-&gt;print(&#39;正在重新创建初始数据信息...&#39;, &quot;\r\n&quot;);
+            $this-&gt;createDbData($Processor);
+            $Processor-&gt;output()-&gt;print(&#39;系统初始化成功.&#39;, &quot;\r\n&quot;);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::help()
+     */
+    public function help(): string
+    {
+        $console    = $_SERVER[&#39;SCRIPT_FILENAME&#39;];
+
+        return &lt;&lt;&lt;HELP
+    例: php {$console} {$this-&gt;getName()}
+
+HELP;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\console\command\CommandInterface::desc()
+     */
+    public function desc(): string
+    {
+        return &#39;系统初始化&#39;;
+    }
+
+    /**
+     * 定义命令行名称
+     *
+     * @return string
+     */
+    public function getName() : string
+    {
+        return &#39;init&#39;;
+    }
+}
+</pre></div>
+</div>
+<p><a class="reference internal" href="command.html"><span class="doc">命令行脚本文件说明</span></a></p>
+<div class="section" id="id1">
+<h2>命令的使用<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>./bin/console init -h 查看帮助</li>
+<li>./bin/console init 执行初始化操作</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="admincmd.html" title="开始第一个命令行程序[admin管理工具]"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="model.html" title="建立数据模型"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

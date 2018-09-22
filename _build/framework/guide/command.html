@@ -1,0 +1,142 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>命令行程序的使用 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>命令行程序的使用<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>在 <a class="reference external" href="https://github.com/asbamboo/framework-strandard">asbamboo/framework-strandard</a> 中命令行程序的入口文件会将./command目录下的脚本当做的命令行程序, 由入口文件 ./bin/console 解析并且将命令程序注册到命令行程序服务。一般情况下命令行程序脚本文件应该继承 asbamboo\console\command\CommandAbstract</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>#!/usr/bin/env php
+&lt;?php
+namespace asbamboo\frameworkDemo\bin;
+
+...
+
+EventScheduler::instance()-&gt;bind(Event::KERNEL_CONSOLE_PRE_EXEC, function(KernelInterface $Kernel){
+    ....
+});
+
+(new Console())-&gt;run(new AppKernel($debug = true));
+</pre></div>
+</div>
+<p>console会通过监听 kernel.console.pre.exec 事件, 将./command目录下的命令行程序注册到服务 asbamboo\console\ProcessorInterface。(new Console())-&gt;run(new AppKernel($debug = true))中将执行 asbamboo\console\ProcessorInterface::exec()方法</p>
+<p><cite>请参阅命令行程序模块</cite>: <a class="reference external" href="../../console/index">asbamboo/console</a></p>
+<div class="section" id="construct">
+<h2>构造函数__construct说明使用<a class="headerlink" href="#construct" title="永久链接至标题">¶</a></h2>
+<dl class="docutils">
+<dt>抽象类asbamboo\console\command\CommandAbstract，有两个重要的方法</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>addOption 添加可选选项列表（附参数列表:）</dt>
+<dd><ul class="first last">
+<li>$name 选项名称</li>
+<li>$default_value 默认值， 默认等于null</li>
+<li>desc 描述信息，默认等于空字符串</li>
+<li>$short_name 缩略名称</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>addArgument 添加参数列表（附参数列表:）</dt>
+<dd><ul class="first last">
+<li>$name 参数名称</li>
+<li>$desc 描述信息</li>
+<li>$default_value 默认值，默认等于空字符串</li>
+<li>$position 位置 表示参数该参数是所有参数里面的第几个，下标从0开始算。默认自动递增的方式添加参数的下标。</li>
+<li>$is_require 表示参数是否必须。</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>你应该通过构造函数调用这两个方法为脚本添加参数列表和选项列表。</p>
+</div>
+<div class="section" id="id2">
+<h2>脚本文件的方法说明<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li>getName 命令行脚本程序的名称</li>
+<li>help 命令行脚本程序的帮助详情信息[./bin/console admin –help] 会展示admin脚本的帮助信息</li>
+<li>desc 命令行脚本程序的简要说明[./bin/console asbamboo:console:lists] 会展示简要说明</li>
+<li>exec 这样是重要方法，脚本执行时调用的方法。可以从参数$Processor中获取输入信息,和处理结果输出。</li>
+<li>getOptionValueByProcessor 这个方法从CommandAbstract继承用来获取选项的值</li>
+<li>getArgumentValueByProcessor 这个方法也是从CommandAbstract继承用来获取参数的值</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

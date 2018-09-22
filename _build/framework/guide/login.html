@@ -1,0 +1,598 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户登录与注销登录 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="权限配置" href="auth.html" />
+    <link rel="prev" title="在主页显示文章的列表" href="home.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="auth.html" title="权限配置"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="home.html" title="在主页显示文章的列表"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="home.html"
+                        title="上一章">在主页显示文章的列表</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="auth.html"
+                        title="下一章">权限配置</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>用户登录与注销登录<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<dl class="docutils">
+<dt>用户登录与注销 <a class="reference external" href="../../security/user/login">asbamboo/security</a> 通过模块实现。该模块实现用户登录与注销需要:</dt>
+<dd><ul class="first last simple">
+<li>实现 asbamboo\security\user\UserInterface 的类</li>
+<li>实现 asbamboo\security\user\provider\UserProviderInterface 的类</li>
+<li>将自定义的UserInterface和UserProviderInterface写入配置信息</li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="asbamboo-security-user-userinterface">
+<h2>实现asbamboo\security\user\UserInterface类<a class="headerlink" href="#asbamboo-security-user-userinterface" title="永久链接至标题">¶</a></h2>
+<dl class="docutils">
+<dt>我们的demo中是将 asbamboo\frameworkStandard\model\user\UserEntity 改造并且实现UserInterface</dt>
+<dd><ul class="first last simple">
+<li>继承 asbamboo\security\user\BaseUser</li>
+<li>修改和补全UserInterface需要的方法</li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\model\user;
+
+use asbamboo\security\user\BaseUser;
+
+/**
+ * @Entity
+ * @Table(name=&quot;t_user&quot;)
+ */
+class UserEntity extends BaseUser
+{
+    /**
+     * @var int
+     *
+     * @Id
+     * @Column(type=&quot;integer&quot;)
+     * @GeneratedValue
+     */
+    private $user_seq;
+
+    /**
+     * @var string
+     *
+     * @Column(type=&quot;string&quot;, unique=true)
+     */
+    private $user_id;
+
+    /**
+     * @var string
+     *
+     * @Column(type=&quot;string&quot;)
+     */
+    private $user_password;
+
+    /**
+     * @var int
+     *
+     * @Column(type=&quot;integer&quot;)
+     */
+    private $user_type;
+
+    /**
+     *
+     * @return number
+     */
+    public function getUserSeq()
+    {
+        return $this-&gt;user_seq;
+    }
+
+    /**
+     *
+     * @param string $user_id
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function setUserId(string $user_id)
+    {
+        $this-&gt;user_id = $user_id;
+        $this-&gt;setLoginName($user_id);
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this-&gt;user_id;
+    }
+
+    /**
+     *
+     * @param string $user_password
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function setUserPassword(string $user_password)
+    {
+        $user_password          = $this-&gt;encodePassword($user_password);
+        $this-&gt;user_password    = $user_password;
+        $this-&gt;setLoginPassword($user_password, true);
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getUserPassword()
+    {
+        return $this-&gt;user_password;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\security\user\BaseUser::getLoginName()
+     */
+    public function getLoginName() : string
+    {
+        return $this-&gt;getUserId();
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\security\user\BaseUser::getLoginPassword()
+     */
+    public function getLoginPassword(): ?string
+    {
+        return $this-&gt;getUserPassword();
+    }
+
+    /**
+     *
+     * @param string $user_type
+     * @return \asbamboo\frameworkStandard\model\user\UserEntity
+     */
+    public function setUserType(string $user_type)
+    {
+        $this-&gt;user_type    = $user_type;
+        $this-&gt;setRoles([$user_type]);
+        return $this;
+    }
+
+    /**
+     *
+     * @return number
+     */
+    public function getUserType()
+    {
+        return $this-&gt;user_type;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \asbamboo\security\user\UserInterface::getRoles()
+     */
+    public function getRoles(): array
+    {
+        $roles  = [];
+        if($this-&gt;getUserType() == Constant::TYPE_ADMIN){
+            $roles[]    = &#39;admin&#39;;
+        }
+        if($this-&gt;getUserType() == Constant::TYPE_USER){
+            $roles[]    = &#39;user&#39;;
+        }
+        return $roles;
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="asbamboo-security-user-provider-userproviderinterface">
+<h2>实现 asbamboo\security\user\provider\UserProviderInterface 的类<a class="headerlink" href="#asbamboo-security-user-provider-userproviderinterface" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\model\user;
+
+use asbamboo\security\user\UserInterface;
+use asbamboo\security\user\provider\UserProviderInterface;
+use asbamboo\di\ContainerAwareTrait;
+use asbamboo\database\FactoryInterface;
+
+/**
+ *
+ * @author 李春寅 &lt;licy2013@aliyun.com&gt;
+ * @since 2018年8月30日
+ */
+class UserProvider implements UserProviderInterface
+{
+    use ContainerAwareTrait;
+
+    /**
+     *
+     * @var FactoryInterface
+     */
+    private $Db;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     */
+    public function __construct(FactoryInterface $Db)
+    {
+        $this-&gt;Db   = $Db;
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\security\user\provider\UserProviderInterface::loadByLoginName()
+     */
+    public function loadByLoginName(string $login_name) : ? UserInterface
+    {
+        $criteria   = [
+            &#39;user_id&#39; =&gt; $login_name,
+        ];
+        $Manager    = $this-&gt;Db-&gt;getManager();
+        return $Manager-&gt;getRepository(UserEntity::class)-&gt;findOneBy($criteria);
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="userinterfaceuserproviderinterface">
+<h2>将自定义的UserInterface和UserProviderInterface写入配置信息<a class="headerlink" href="#userinterfaceuserproviderinterface" title="永久链接至标题">¶</a></h2>
+<p>./config/config.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\framework\config\RouterConfig;
+use asbamboo\framework\template\Template;
+use asbamboo\framework\config\DbConfig;
+use asbamboo\frameworkStandard\model\user\UserProvider;
+use asbamboo\security\user\login\Login;
+
+return [
+    DbConfig::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;configs&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;db.php&#39;]],
+    RouterConfig::class         =&gt; [&#39;init_params&#39; =&gt; [&#39;configs&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;router.php&#39;]],
+    UserProvider::class         =&gt; [&#39;class&#39; =&gt; UserProvider::class],
+    Login::class                =&gt; [&#39;init_params&#39; =&gt; [&#39;UserProvider&#39; =&gt; &#39;@&#39;.UserProvider::class]],
+    Template::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;template_dir&#39; =&gt; [dirname(__DIR__) . DIRECTORY_SEPARATOR . &#39;view&#39;]]],
+];
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>创建用户登录成功时的事件监听器，为了页面跳转<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>创建监听器</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\listener;
+
+use asbamboo\security\user\token\UserTokenInterface;
+use asbamboo\http\RedirectResponse;
+use asbamboo\router\RouterInterface;
+
+class LoginListener
+{
+    /**
+     *
+     * @var RouterInterface
+     */
+    private $Router;
+
+    /**
+     *
+     * @param RouterInterface $Router
+     */
+    public function __construct(RouterInterface $Router)
+    {
+        $this-&gt;Router = $Router;
+    }
+
+    /**
+     * 登录成功页面跳回主页
+     *
+     * @param UserTokenInterface $UserToken
+     */
+    public function onLoginSuccess(UserTokenInterface $UserToken)
+    {
+        $redirect_url   = $this-&gt;Router-&gt;generateUrl(&#39;home&#39;);
+        return (new RedirectResponse($redirect_url))-&gt;send();
+    }
+}
+</pre></div>
+</div>
+<p>./config/listener.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\security\Event;
+use asbamboo\frameworkStandard\listener\LoginListener;
+use asbamboo\router\RouterInterface;
+
+return [
+    [&#39;name&#39; =&gt; Event::LOGIN_SUCCESS, &#39;class&#39; =&gt; LoginListener::class, &#39;method&#39; =&gt; &#39;onLoginSuccess&#39;, &#39;construct_params&#39; =&gt; [&#39;@&#39;.RouterInterface::class]],
+];
+</pre></div>
+</div>
+<p>./config/config.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\framework\config\EventListenerConfig;
+
+return [
+
+    ...
+
+    EventListenerConfig::class  =&gt; [&#39;init_params&#39; =&gt; [&#39;configs&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;listener.php&#39;]],
+];
+</pre></div>
+</div>
+</div>
+<div class="section" id="login-controller">
+<h2>添加login controller<a class="headerlink" href="#login-controller" title="永久链接至标题">¶</a></h2>
+<p>控制器中注销所使用的服务 LogoutInterface 并没有在什么地方注册，这时因为在asbamboo/framework中，服务是可以自动注册的。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\controller;
+
+use asbamboo\framework\controller\ControllerAbstract;
+use asbamboo\http\ResponseInterface;
+use asbamboo\security\exception\UserNotExistsException;
+use asbamboo\security\exception\NotEqualPasswordException;
+use asbamboo\http\ServerRequestInterface;
+use asbamboo\security\user\login\LoginInterface;
+use asbamboo\security\user\login\LogoutInterface;
+
+/**
+ *
+ * @author 李春寅 &lt;licy2013@aliyun.com&gt;
+ * @since 2018年7月30日
+ */
+class Login extends ControllerAbstract
+{
+    /**
+     *
+     * @var ServerRequestInterface
+     * @var LoginInterface
+     * @var LogoutInterface
+     */
+    private $Request, $Login, $Logout;
+
+    /**
+     *
+     * @param ServerRequestInterface $Request
+     * @param LoginInterface $Login
+     * @param LogoutInterface $Logout
+     */
+    public function __construct(ServerRequestInterface $Request, LoginInterface $Login, LogoutInterface $Logout)
+    {
+        $this-&gt;Request  = $Request;
+        $this-&gt;Login    = $Login;
+        $this-&gt;Logout   = $Logout;
+    }
+
+    /**
+     * 登陆表单
+     *
+     * @return \asbamboo\http\ResponseInterface
+     */
+    public function form() : ResponseInterface
+    {
+        $error_message    = &#39;&#39;;
+        try
+        {
+            /**
+             * 登录成功后通过事件处理页面跳转。
+             */
+            if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+                $this-&gt;Login-&gt;handler($this-&gt;Request);
+            }
+        }catch(UserNotExistsException $e){
+            $error_message    = &#39;用户名或者密码错误&#39;;
+        }catch(NotEqualPasswordException $e){
+            $error_message    = &#39;用户名或者密码错误&#39;;
+        }catch(\Exception $e){
+            $error_message    = &#39;系统异常。&#39;;
+        }
+        return $this-&gt;view([&#39;error_message&#39; =&gt; $error_message]);
+    }
+
+    /**
+     * 注销
+     *
+     * @return \asbamboo\http\ResponseInterface
+     */
+    public function logout()
+    {
+        $this-&gt;Logout-&gt;handler($this-&gt;Request);
+        return $this-&gt;redirect(&#39;home&#39;);
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>创建登录表单模板文件<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>./view/login/form.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">stylesheet</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{{</span> <span class="n">parent</span><span class="p">()</span> <span class="p">}}</span>
+    <span class="o">&lt;</span><span class="n">style</span><span class="o">&gt;</span>
+        <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">signin</span> <span class="p">{</span>
+          <span class="n">width</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+          <span class="nb">max</span><span class="o">-</span><span class="n">width</span><span class="p">:</span> <span class="mi">330</span><span class="n">px</span><span class="p">;</span>
+          <span class="n">padding</span><span class="p">:</span> <span class="mi">15</span><span class="n">px</span><span class="p">;</span>
+          <span class="n">margin</span><span class="p">:</span> <span class="mi">0</span> <span class="n">auto</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">signin</span> <span class="o">.</span><span class="n">checkbox</span> <span class="p">{</span>
+          <span class="n">font</span><span class="o">-</span><span class="n">weight</span><span class="p">:</span> <span class="mi">400</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">signin</span> <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">control</span> <span class="p">{</span>
+          <span class="n">position</span><span class="p">:</span> <span class="n">relative</span><span class="p">;</span>
+          <span class="n">box</span><span class="o">-</span><span class="n">sizing</span><span class="p">:</span> <span class="n">border</span><span class="o">-</span><span class="n">box</span><span class="p">;</span>
+          <span class="n">height</span><span class="p">:</span> <span class="n">auto</span><span class="p">;</span>
+          <span class="n">padding</span><span class="p">:</span> <span class="mi">10</span><span class="n">px</span><span class="p">;</span>
+          <span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="p">:</span> <span class="mi">16</span><span class="n">px</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">signin</span> <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">control</span><span class="p">:</span><span class="n">focus</span> <span class="p">{</span>
+          <span class="n">z</span><span class="o">-</span><span class="n">index</span><span class="p">:</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">signin</span> <span class="nb">input</span><span class="p">[</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="p">{</span>
+          <span class="n">margin</span><span class="o">-</span><span class="n">bottom</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="n">px</span><span class="p">;</span>
+          <span class="n">border</span><span class="o">-</span><span class="n">bottom</span><span class="o">-</span><span class="n">right</span><span class="o">-</span><span class="n">radius</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="n">border</span><span class="o">-</span><span class="n">bottom</span><span class="o">-</span><span class="n">left</span><span class="o">-</span><span class="n">radius</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="n">form</span><span class="o">-</span><span class="n">signin</span> <span class="nb">input</span><span class="p">[</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">]</span> <span class="p">{</span>
+          <span class="n">margin</span><span class="o">-</span><span class="n">bottom</span><span class="p">:</span> <span class="mi">10</span><span class="n">px</span><span class="p">;</span>
+          <span class="n">border</span><span class="o">-</span><span class="n">top</span><span class="o">-</span><span class="n">left</span><span class="o">-</span><span class="n">radius</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="n">border</span><span class="o">-</span><span class="n">top</span><span class="o">-</span><span class="n">right</span><span class="o">-</span><span class="n">radius</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="o">&lt;/</span><span class="n">style</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">error_message</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;alert alert-danger&quot;</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">error_message</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">form</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-signin&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">h1</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;h3 mb-3 font-weight-normal&quot;</span><span class="o">&gt;</span><span class="n">请登陆</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;login_name&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="n">ID</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;login_name&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;login_name&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入用户ID&quot;</span> <span class="n">required</span> <span class="n">autofocus</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;login_password&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;login_password&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;login_password&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入用户密码&quot;</span> <span class="n">required</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-lg btn-primary btn-block&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="o">&gt;</span><span class="n">登录</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="url">
+<h2>将登录和登出url注册到路由信息<a class="headerlink" href="#url" title="永久链接至标题">¶</a></h2>
+<p>./config/router.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return  [
+    ...
+
+    [&#39;id&#39; =&gt; &#39;login&#39;, &#39;path&#39; =&gt; &#39;/login&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Login:form&#39;],
+    [&#39;id&#39; =&gt; &#39;logout&#39;, &#39;path&#39; =&gt; &#39;/logout&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Login:logout&#39;],
+
+    ...
+];
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>将登录和注销相关url添加到头部文件<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>./view/_include/top.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">nav</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar navbar-expand-lg navbar-light bg-light rounded&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-toggler&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="n">data</span><span class="o">-</span><span class="n">toggle</span><span class="o">=</span><span class="s2">&quot;collapse&quot;</span> <span class="n">data</span><span class="o">-</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;#navbarsExample10&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">controls</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">expanded</span><span class="o">=</span><span class="s2">&quot;false&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Toggle navigation&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-toggler-icon&quot;</span><span class="o">&gt;&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;collapse navbar-collapse justify-content-md-center&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-nav&quot;</span><span class="o">&gt;</span>
+
+        <span class="o">...</span>
+
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="s1">&#39;anonymous&#39;</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">getRoles</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;login&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">登陆</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="o">&gt;</span><span class="n">当前用户</span><span class="p">:{{</span> <span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">getLoginName</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;logout&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">注销</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+      <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">nav</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>试一试<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>第一个管理员，可以只用命令行工具 ./bin/console admin 添加，然后可以输入刚刚添加的账号密码测试一下。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="auth.html" title="权限配置"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="home.html" title="在主页显示文章的列表"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>
