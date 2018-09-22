@@ -18,6 +18,9 @@ asbamboo/framwork是一个基于MVC模式的、模块化的、很容易扩展的
     guide/user
     guide/post
     guide/home
+    guide/login
+    guide/auth
+    guide/exception
 
 
 .. _asbamboo/framework-standard: https://github.com/asbamboo/framework-standard
