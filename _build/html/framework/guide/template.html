@@ -1,0 +1,168 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>视图模板使用说明 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>视图模板使用说明<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>在 <a class="reference external" href="https://github.com/asbamboo/framework-strandard">asbamboo/framework-strandard</a> 中，视图模板依赖asbamboo\framework\template\Template服务。使用这个服务需要通过配置文件指定模板存放的目录:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\framework\template\Template;
+
+return [
+
+    ...
+
+    Template::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;template_dir&#39; =&gt; [dirname(__DIR__) . DIRECTORY_SEPARATOR . &#39;view&#39;]]],
+];
+</pre></div>
+</div>
+<p>这个template继承组件 <a class="reference external" href="../../template/index">asbamboo/template</a></p>
+<div class="section" id="asbamboo-framework">
+<h2>asbamboo/framework中模板的扩展<a class="headerlink" href="#asbamboo-framework" title="永久链接至标题">¶</a></h2>
+<p>在框架中，为模板提供了几个扩展方法可以在模板中使用。</p>
+<p>扩展的方法：</p>
+<ul class="simple">
+<li>has_roles(…$roles) 用于在模板中判断当前用户是否拥有这些角色</li>
+<li>path($route_id, $params = null) 用于在模板中根据route_id生成一个url path</li>
+<li>is_current($route_id) 用于在模板中判断一个route id是否是当前请求的route</li>
+</ul>
+<p>扩展的变量:</p>
+<ul class="simple">
+<li>app.user 当前访问的用户 一个 asbamboo\security\user\UserInterface实例</li>
+<li>app.request 当前请求信息 一个 asbamboo\http\ServerRequestInterface</li>
+<li>app.is_debug 是否是debug模式</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>自定义扩展<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>框架允许你可以添加自定义模板的扩展方法或变量需要修改配置信息如下:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\framework\template\Template;
+
+return [
+
+    ...
+
+    Template::class             =&gt; [&#39;init_params&#39; =&gt; [&#39;template_dir&#39; =&gt; [dirname(__DIR__) . DIRECTORY_SEPARATOR . &#39;view&#39;], &#39;extensions&#39; =&gt; [TemplateExtensions::class]]],
+];
+</pre></div>
+</div>
+<p>然后编写扩展类其中:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\template\Extension;
+use asbamboo\template\Functions;
+use asbamboo\template\ExtensionGlobalsInterface;
+
+
+class TemplateExtensions extends Extension implements ExtensionGlobalsInterface
+{
+
+    /**
+     * 添加模板中全局变量
+     *
+     * @return \asbamboo\framework\template\extension\GlobalExtension[][]|string[][]
+     */
+    public function getGlobals()
+    {
+        return [&#39;app&#39;=&gt;[
+            &#39;custom&#39;      =&gt; &#39;custom&#39;,
+        ]];
+    }
+
+    /**
+     * 添加模板中可用的方法
+     *
+     * {@inheritDoc}
+     * @see Extension::getFunctions()
+     */
+    public function getFunctions()
+    {
+        return [
+            new Functions(&#39;test_extension&#39;, [$this, &#39;testExtension&#39;]),
+        ];
+    }
+
+    public function testExtension()
+    {
+        echo &#39;testExtension&#39;;
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

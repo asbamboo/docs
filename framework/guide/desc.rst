@@ -47,12 +47,19 @@
 
 :doc:`使用路由 <route>`
 
-:doc:`数据操作 <database>`
+:doc:`数据操作 <../../database/index>`
 
 :doc:`视图模板的使用 <template>`
 
 :doc:`事件监听 <../../event/index>`
 
+.. toctree::
+    :hidden:
+    
+    command
+    configure
+    route
+    template
 
 
 .. _asbamboo/framework: https://github.com/asbamboo/framework

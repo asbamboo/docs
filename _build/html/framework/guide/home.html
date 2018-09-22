@@ -1,0 +1,172 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>在主页显示文章的列表 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="用户登录与注销登录" href="login.html" />
+    <link rel="prev" title="创建文章管理的http处理程序" href="post.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="login.html" title="用户登录与注销登录"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="post.html" title="创建文章管理的http处理程序"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="post.html"
+                        title="上一章">创建文章管理的http处理程序</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="login.html"
+                        title="下一章">用户登录与注销登录</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>在主页显示文章的列表<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>现在我们将 asbamboo\frameworkStandard\model\post 数据列表展示在主页中</p>
+<div class="section" id="controller">
+<h2>修改controller<a class="headerlink" href="#controller" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\controller;
+
+use asbamboo\framework\controller\ControllerAbstract;
+use asbamboo\frameworkStandard\model\post\PostEntity;
+use Doctrine\ORM\EntityRepository;
+use asbamboo\database\FactoryInterface;
+
+class Home extends ControllerAbstract
+{
+    /**
+     *
+     * @var FactoryInterface
+     */
+    private $Db;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     */
+    public function __construct(FactoryInterface $Db)
+    {
+        $this-&gt;Db   = $Db;
+    }
+
+    /**
+     *
+     * @return \asbamboo\http\ResponseInterface
+     */
+    public function index()
+    {
+        /**
+         * @var UserToken $UserToken
+         * @var EntityRepository $PostRepository
+         */
+        $DbManager              = $this-&gt;Db-&gt;getManager();
+        $PostRepository         = $DbManager-&gt;getRepository(PostEntity::class);
+        $PostEntitys            = $PostRepository-&gt;findBy([], [&#39;post_update_time&#39; =&gt; &#39;DESC&#39;]);
+        return $this-&gt;view([ &#39;PostEntitys&#39; =&gt; $PostEntitys]);
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="view">
+<h2>修改view<a class="headerlink" href="#view" title="永久链接至标题">¶</a></h2>
+<p>./view/home/index.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">hr</span><span class="o">/&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">PostEntity</span> <span class="ow">in</span> <span class="n">PostEntitys</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">PostEntity</span><span class="o">.</span><span class="n">getPostTitle</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">发布人</span><span class="p">:{{</span> <span class="n">PostEntity</span><span class="o">.</span><span class="n">getUser</span><span class="p">()</span><span class="o">.</span><span class="n">getUserId</span><span class="p">()</span> <span class="p">}}</span> <span class="o">|</span> <span class="n">发布时间</span><span class="p">:{{</span> <span class="n">PostEntity</span><span class="o">.</span><span class="n">getPostUpdateTime</span><span class="p">()</span><span class="o">|</span><span class="n">date</span><span class="p">(</span><span class="s1">&#39;Y-m-d H:i:s&#39;</span><span class="p">)</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">PostEntity</span><span class="o">.</span><span class="n">getPostContent</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">hr</span><span class="o">/&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="login.html" title="用户登录与注销登录"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="post.html" title="创建文章管理的http处理程序"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>
