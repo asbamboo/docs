@@ -1,0 +1,387 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>创建用户管理的http处理程序 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="创建文章管理的http处理程序" href="post.html" />
+    <link rel="prev" title="修改html布局" href="layout.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="post.html" title="创建文章管理的http处理程序"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="layout.html" title="修改html布局"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="layout.html"
+                        title="上一章">修改html布局</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="post.html"
+                        title="下一章">创建文章管理的http处理程序</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="http">
+<h1>创建用户管理的http处理程序<a class="headerlink" href="#http" title="永久链接至标题">¶</a></h1>
+<p>现在我们先添加一个用户管理的增删该查程序。该程序通过操作asbamboo\frameworkStandard\model\user管理用户数据</p>
+<div class="section" id="controller">
+<h2>创建Controller文件<a class="headerlink" href="#controller" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\controller;
+
+use asbamboo\framework\controller\ControllerAbstract;
+use asbamboo\http\ResponseInterface;
+use asbamboo\http\ServerRequest;
+use asbamboo\framework\Constant;
+use asbamboo\database\Factory;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+use \asbamboo\frameworkStandard\model\user\Constant AS UserConstant;
+use asbamboo\database\FactoryInterface;
+use asbamboo\http\ServerRequestInterface;
+
+class User extends ControllerAbstract
+{
+    /**
+     *
+     * @var FactoryInterface $DbManager
+     * @var ServerRequestInterface $Request
+     */
+    private $DbManager, $Request;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     * @param ServerRequestInterface $Request
+     */
+    public function __construct(FactoryInterface $Db, ServerRequestInterface $Request)
+    {
+        $this-&gt;DbManager   = $Db-&gt;getManager();
+        $this-&gt;Request      = $Request;
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function index() : ResponseInterface
+    {
+        $UserEntitys            = $this-&gt;DbManager-&gt;getRepository(UserEntity::class)-&gt;findBy([&#39;user_type&#39; =&gt; UserConstant::TYPE_USER]);
+
+        return $this-&gt;view([ &#39;UserEntitys&#39; =&gt; $UserEntitys]);
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function create() : ResponseInterface
+    {
+        $error_message  = &#39;&#39;;
+        try
+        {
+            $user_id                = $this-&gt;Request-&gt;getPostParam(&#39;user_id&#39;);
+            $user_password          = $this-&gt;Request-&gt;getPostParam(&#39;user_password&#39;);
+            $user_confirm_password  = $this-&gt;Request-&gt;getPostParam(&#39;user_confirm_password&#39;);
+            $UserEntity             = new UserEntity();
+
+            if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+                if(empty($user_id)){
+                    throw new \InvalidArgumentException(&#39;请输入用户id。&#39;);
+                }
+
+                if(empty($user_password)){
+                    throw new \InvalidArgumentException(&#39;请输入用户密码。&#39;);
+                }
+
+                if($user_confirm_password != $user_password){
+                    throw new \InvalidArgumentException(&#39;两次密码输入不一致。&#39;);
+                }
+
+                $UserEntity-&gt;setUserId($user_id);
+                $UserEntity-&gt;setUserPassword($user_password);
+                $UserEntity-&gt;setUserType(UserConstant::TYPE_USER);
+
+                $this-&gt;DbManager-&gt;persist($UserEntity);
+                $this-&gt;DbManager-&gt;flush();
+                return $this-&gt;redirect(&#39;user&#39;);
+            }
+        }catch(\Exception $e){
+            $error_message  = $e-&gt;getMessage();
+        }
+
+        return $this-&gt;view([&#39;error_message&#39; =&gt; $error_message]);
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function update($user_id) : ResponseInterface
+    {
+        $error_message  = &#39;&#39;;
+        try
+        {
+            $user_password          = $this-&gt;Request-&gt;getPostParam(&#39;user_password&#39;);
+            $user_confirm_password  = $this-&gt;Request-&gt;getPostParam(&#39;user_confirm_password&#39;);
+            $UserRepository         = $this-&gt;DbManager-&gt;getRepository(UserEntity::class);
+            $UserEntity             = $UserRepository-&gt;findOneBy([&#39;user_id&#39; =&gt; $user_id]);
+
+            if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+                if(empty($user_password)){
+                    throw new \InvalidArgumentException(&#39;请输入用户密码。&#39;);
+                }
+
+                if($user_confirm_password != $user_password){
+                    throw new \InvalidArgumentException(&#39;两次密码输入不一致。&#39;);
+                }
+
+                $UserEntity-&gt;setUserPassword($user_password);
+                $UserEntity-&gt;setUserType(UserConstant::TYPE_USER);
+
+                $this-&gt;DbManager-&gt;persist($UserEntity);
+                $this-&gt;DbManager-&gt;flush();
+                return $this-&gt;redirect(&#39;user&#39;);
+            }
+        }catch(\Exception $e){
+            $error_message  = $e-&gt;getMessage();
+        }
+
+        return $this-&gt;view([&#39;UserEntity&#39; =&gt; $UserEntity, &#39;error_message&#39; =&gt; $error_message]);
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function delete() : ResponseInterface
+    {
+        $user_id                = $this-&gt;Request-&gt;getPostParam(&#39;user_id&#39;);
+        $UserRepository         = $this-&gt;DbManager-&gt;getRepository(UserEntity::class);
+        $UserEntity             = $UserRepository-&gt;findOneBy([&#39;user_id&#39; =&gt; $user_id]);
+
+        if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+            $this-&gt;DbManager-&gt;remove($UserEntity);
+            $this-&gt;DbManager-&gt;flush();
+            return $this-&gt;redirect(&#39;user&#39;);
+        }
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>创建视图文件<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>默认情况下在模板目录中查找与controller class:method对应的视图文件。</p>
+<p>./view/user/create.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">error_message</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;alert alert-danger&quot;</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">error_message</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">form</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">h1</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;h3 mb-3 font-weight-normal&quot;</span><span class="o">&gt;</span><span class="n">编辑用户</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span><span class="o">&gt;</span><span class="n">ID</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control-plaintext&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserId()}}&quot;</span> <span class="n">readonly</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;user_password&quot;</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_password&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;user_password&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserPassword()}}&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入用户密码&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;user_confirm_password&quot;</span><span class="o">&gt;</span><span class="n">确认密码</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_confirm_password&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;user_confirm_password&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserPassword()}}&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请确认用户密码&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-primary&quot;</span><span class="o">&gt;</span><span class="n">提交表单</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>./view/user/index.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;user_create&#39;) }}&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-link&quot;</span><span class="o">&gt;</span><span class="n">添加用户</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">table</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">thead</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="c1">#&lt;/th&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="n">账号</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="n">操作</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">thead</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">tbody</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">UserEntity</span> <span class="ow">in</span> <span class="n">UserEntitys</span> <span class="o">%</span><span class="p">}</span>
+                <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">th</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">loop</span><span class="o">.</span><span class="n">index</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">UserEntity</span><span class="o">.</span><span class="n">getUserId</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+                      <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;user_update&#39;, {user_id: UserEntity.getUserId()}) }}&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-link&quot;</span><span class="o">&gt;</span><span class="n">编辑</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+                      <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;user_delete&#39;) }}&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+                        <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;hidden&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserId()}}&quot;</span> <span class="o">/&gt;</span>
+                        <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-link&quot;</span><span class="o">&gt;</span><span class="n">删除</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+                      <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+                  <span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+                <span class="o">&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+          <span class="o">&lt;/</span><span class="n">tbody</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>./view/user/update.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">error_message</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;alert alert-danger&quot;</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">error_message</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">form</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">h1</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;h3 mb-3 font-weight-normal&quot;</span><span class="o">&gt;</span><span class="n">编辑用户</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span><span class="o">&gt;</span><span class="n">ID</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control-plaintext&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserId()}}&quot;</span> <span class="n">readonly</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;user_password&quot;</span><span class="o">&gt;</span><span class="n">密码</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_password&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;user_password&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserPassword()}}&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入用户密码&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;user_confirm_password&quot;</span><span class="o">&gt;</span><span class="n">确认密码</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_confirm_password&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;user_confirm_password&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{UserEntity.getUserPassword()}}&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请确认用户密码&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-primary&quot;</span><span class="o">&gt;</span><span class="n">提交表单</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>将新添加的用户管理程序注册到路由服务<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>./config/router.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return  [
+    ...
+
+
+    [&#39;id&#39; =&gt; &#39;user&#39;, &#39;path&#39; =&gt; &#39;/user&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\User:index&#39;],
+    [&#39;id&#39; =&gt; &#39;user_create&#39;, &#39;path&#39; =&gt; &#39;/user-create&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\User:create&#39;],
+    [&#39;id&#39; =&gt; &#39;user_update&#39;, &#39;path&#39; =&gt; &#39;/{user_id}/user-update&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\User:update&#39;],
+    [&#39;id&#39; =&gt; &#39;user_delete&#39;, &#39;path&#39; =&gt; &#39;/user-delete&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\User:delete&#39;],
+
+    ...
+];
+</pre></div>
+</div>
+</div>
+<div class="section" id="url">
+<h2>将用户管理的入口url添加到公共模板文件中<a class="headerlink" href="#url" title="永久链接至标题">¶</a></h2>
+<p>./view/_include/top.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">nav</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar navbar-expand-lg navbar-light bg-light rounded&quot;</span><span class="o">&gt;</span>
+    <span class="o">...</span>
+
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;collapse navbar-collapse justify-content-md-center&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-nav&quot;</span><span class="o">&gt;</span>
+
+        <span class="o">...</span>
+
+        <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;user&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;user&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">人员管理</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">nav</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>好了，再访问下试试吧</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="post.html" title="创建文章管理的http处理程序"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="layout.html" title="修改html布局"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

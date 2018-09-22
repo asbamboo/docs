@@ -1,0 +1,177 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>权限配置 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="自定义异常处理页面" href="exception.html" />
+    <link rel="prev" title="用户登录与注销登录" href="login.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="exception.html" title="自定义异常处理页面"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="login.html" title="用户登录与注销登录"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="login.html"
+                        title="上一章">用户登录与注销登录</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="exception.html"
+                        title="下一章">自定义异常处理页面</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>权限配置<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>asbamboo/framework中权限的配置，使用 <a class="reference external" href="../../security/gurad/authorization">asbamboo/security</a> 模块实现。</p>
+<div class="section" id="authorization">
+<h2>配置authorization服务<a class="headerlink" href="#authorization" title="永久链接至标题">¶</a></h2>
+<p>创建权限配置文件 ./config/authorization.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\security\gurad\authorization\Rule;
+use asbamboo\security\gurad\authorization\RuleCollection;
+use asbamboo\security\user\Role;
+
+$RuleCollection    = new RuleCollection();
+$RuleCollection-&gt;addRule(new Rule(&#39;strncasecmp(&quot;/user&quot;, $request-&gt;getUri()-&gt;getPath(), &quot;5&quot;) === 0 ? in_array(&quot;admin&quot;, $user-&gt;getRoles()) : true&#39;));
+$RuleCollection-&gt;addRule(new Rule(&#39;strncasecmp(&quot;/post&quot;, $request-&gt;getUri()-&gt;getPath(), &quot;5&quot;) === 0 ? !in_array(&quot;&#39; . Role::ANONYMOUS . &#39;&quot;, $user-&gt;getRoles()) : true&#39;));
+return $RuleCollection;
+</pre></div>
+</div>
+<p>修改主配置文件 ./config/config.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+use asbamboo\framework\config\RouterConfig;
+use asbamboo\framework\template\Template;
+use asbamboo\framework\config\DbConfig;
+use asbamboo\frameworkStandard\model\user\UserProvider;
+use asbamboo\security\user\login\Login;
+use asbamboo\framework\config\EventListenerConfig;
+use asbamboo\security\gurad\authorization\Authenticator;
+
+return [
+    ...
+
+    Authenticator::class        =&gt; [&#39;init_params&#39; =&gt; [&#39;RuleCollection&#39; =&gt; include __DIR__ . DIRECTORY_SEPARATOR . &#39;authorization.php&#39;]],
+];
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>在模板的导航菜单中把没有权限的菜单隐藏<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>暂时扩展模板中缺少权限验证功能的方法，目前只能使用has_roles判断用户是否具有该角色。 后期打算添加一个is_granted方法专门验证用户是否有这个url的权限。</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">nav</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar navbar-expand-lg navbar-light bg-light rounded&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-toggler&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="n">data</span><span class="o">-</span><span class="n">toggle</span><span class="o">=</span><span class="s2">&quot;collapse&quot;</span> <span class="n">data</span><span class="o">-</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;#navbarsExample10&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">controls</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">expanded</span><span class="o">=</span><span class="s2">&quot;false&quot;</span> <span class="n">aria</span><span class="o">-</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Toggle navigation&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-toggler-icon&quot;</span><span class="o">&gt;&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;collapse navbar-collapse justify-content-md-center&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-nav&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;home&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;home&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">asbamboo</span> <span class="n">demo</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">has_roles</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;admin&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;post&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;post&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">文章管理</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">has_roles</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;user&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;user&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">人员管理</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="s1">&#39;anonymous&#39;</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">getRoles</span><span class="p">()</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;login&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">登陆</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="o">&gt;</span><span class="n">当前用户</span><span class="p">:{{</span> <span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">getLoginName</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;logout&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">注销</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+      <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">nav</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="exception.html" title="自定义异常处理页面"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="login.html" title="用户登录与注销登录"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

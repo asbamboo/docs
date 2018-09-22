@@ -8,10 +8,35 @@
 我们将做一个具有如下功能的demo
 --------------------------------
 
-#. :doc:`通过命令行工具可以在服务端添加超级管理员 <admincmd>`
+#. 通过命令行工具可以在服务端添加超级管理员 
 #. 超级管理员可以登录后添加一般管理员
 #. 一般管理员，和超级管理员都能工发布和编辑文章
 #. 匿名用户可以通过http请求查看到发布的文章信息
+
+开始
+----------------------
+
+:doc:`建立数据模型 <model>`
+
+:doc:`创建init命令 <initcmd>`
+
+:doc:`创建admin命令 <admincmd>`
+
+:doc:`修改html皮肤布局 <layout>`
+
+:doc:`创建用户管理程序 <user>`
+
+:doc:`创建文章管理程序 <post>`
+
+:doc:`主页显示文章列表 <home>`
+
+:doc:`登录与注销 <login>`
+
+:doc:`配置权限<auth>`
+
+:doc:`创建自定义异常处理页面 <exception>`
+
+
 
 通过本指南你会了解
 ---------------------------
@@ -22,12 +47,19 @@
 
 :doc:`使用路由 <route>`
 
-* 数据操作
+:doc:`数据操作 <../../database/index>`
 
-* 视图模板
+:doc:`视图模板的使用 <template>`
 
-* 事件监听
+:doc:`事件监听 <../../event/index>`
 
+.. toctree::
+    :hidden:
+    
+    command
+    configure
+    route
+    template
 
 
 .. _asbamboo/framework: https://github.com/asbamboo/framework

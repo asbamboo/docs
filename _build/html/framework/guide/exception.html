@@ -1,0 +1,148 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>自定义异常处理页面 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="autoload自动加载器" href="../../autoload/index.html" />
+    <link rel="prev" title="权限配置" href="auth.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="auth.html" title="权限配置"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="auth.html"
+                        title="上一章">权限配置</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../../autoload/index.html"
+                        title="下一章">autoload自动加载器</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>自定义异常处理页面<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<dl class="docutils">
+<dt>asbamboo/framework默认是用框架内部自带的异常处理页面。</dt>
+<dd><ul class="first last simple">
+<li>如何在你的视图模板目录中找到了_exception目录, 将在你自定义目录中查找异常处理模板</li>
+<li>优先使用 _exception/{error code}.html.tpl，如果没有的话使用_exception/exception.html.tpl</li>
+<li>没有找到自定义模板的情况下使用系统内置的异常处理模板</li>
+<li>模板文件中变量 Exception 是一个 Throwable实例</li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="exception">
+<h2>创建通用exception模板<a class="headerlink" href="#exception" title="永久链接至标题">¶</a></h2>
+<p>./view/_exception/exception.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">hr</span><span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">服务端无法处理您的请求</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="p">{{</span> <span class="ne">Exception</span><span class="o">.</span><span class="n">getMessage</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;javascript:history.back()&quot;</span><span class="o">&gt;</span><span class="n">返回</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">is_debug</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;</span><span class="p">{{</span> <span class="ne">Exception</span><span class="o">.</span><span class="n">__toString</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="codeexception">
+<h2>创建针对某个异常code的exception模板（如没有访问权限）<a class="headerlink" href="#codeexception" title="永久链接至标题">¶</a></h2>
+<p>./view/_exception/403.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>{% extends &#39;_layout/default.html.tpl&#39; %}
+{% block content %}
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div&gt;
+            &lt;a href=&quot;javascript:history.back()&quot; class=&quot;btn btn-link&quot;&gt;你没有权限访问此页面！点此返回上一页。&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+{% endblock %}
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../../autoload/index.html" title="autoload自动加载器"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="auth.html" title="权限配置"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>

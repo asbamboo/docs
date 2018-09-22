@@ -1,0 +1,427 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>创建文章管理的http处理程序 &#8212; asbamboo php framework  文档</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="在主页显示文章的列表" href="home.html" />
+    <link rel="prev" title="创建用户管理的http处理程序" href="user.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="home.html" title="在主页显示文章的列表"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="user.html" title="创建用户管理的http处理程序"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="user.html"
+                        title="上一章">创建用户管理的http处理程序</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="home.html"
+                        title="下一章">在主页显示文章的列表</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="转向" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="http">
+<h1>创建文章管理的http处理程序<a class="headerlink" href="#http" title="永久链接至标题">¶</a></h1>
+<p>现在我们先添加一个文章管理的增删该查程序。该程序通过操作asbamboo\frameworkStandard\model\post管理文章数据</p>
+<div class="section" id="controller">
+<h2>创建Controller文件<a class="headerlink" href="#controller" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+namespace asbamboo\frameworkStandard\controller;
+
+use asbamboo\framework\controller\ControllerAbstract;
+use asbamboo\http\ResponseInterface;
+use asbamboo\frameworkStandard\model\user\UserEntity;
+use asbamboo\frameworkStandard\model\post\PostEntity;
+use asbamboo\frameworkStandard\model\user\UserRepository;
+use asbamboo\database\FactoryInterface;
+use asbamboo\security\user\token\UserTokenInterface;
+use asbamboo\database\ManagerInterface;
+use asbamboo\http\ServerRequestInterface;
+
+/**
+ *
+ * @author 李春寅 &lt;licy2013@aliyun.com&gt;
+ * @since 2018年9月3日
+ */
+class Post extends ControllerAbstract
+{
+    /**
+     *
+     * @var ManagerInterface
+     * @var UserTokenInterface
+     * @var ServerRequestInterface
+     */
+    private $DbManager, $UserToken, $Request;
+
+    /**
+     *
+     * @param FactoryInterface $Db
+     * @param UserTokenInterface $UserToken
+     * @param ServerRequestInterface $Request
+     */
+    public function __construct(FactoryInterface $Db, UserTokenInterface $UserToken, ServerRequestInterface $Request)
+    {
+        $this-&gt;DbManager    = $Db-&gt;getManager();
+        $this-&gt;UserToken    = $UserToken;
+        $this-&gt;Request      = $Request;
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function index() : ResponseInterface
+    {
+        $PostEntitys    = $this-&gt;DbManager-&gt;getRepository(PostEntity::class)-&gt;findBy([
+            &#39;User&#39; =&gt; $this-&gt;UserToken-&gt;getUser()-&gt;getUserSeq()],
+            [&#39;post_update_time&#39; =&gt; &#39;DESC&#39;]
+        );
+        return $this-&gt;view([ &#39;PostEntitys&#39; =&gt; $PostEntitys]);
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function create() : ResponseInterface
+    {
+        $error_message  = &#39;&#39;;
+        try
+        {
+            /**
+             * @var UserRepository $UserRepository;
+             */
+            $post_title             = $this-&gt;Request-&gt;getPostParam(&#39;post_title&#39;);
+            $post_content           = $this-&gt;Request-&gt;getPostParam(&#39;post_content&#39;);
+            $UserRepository         = $this-&gt;DbManager-&gt;getRepository(UserEntity::class);
+            $UserEntity             = $UserRepository-&gt;find($this-&gt;UserToken-&gt;getUser()-&gt;getUserSeq());
+            $PostEntity             = new PostEntity();
+
+            if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+                if(empty($post_title)){
+                    throw new \InvalidArgumentException(&#39;请输入文章标题。&#39;);
+                }
+
+                if(empty($post_content)){
+                    throw new \InvalidArgumentException(&#39;请输入文章内容。&#39;);
+                }
+
+                $PostEntity-&gt;setPostTitle($post_title);
+                $PostEntity-&gt;setPostContent($post_content);
+                $PostEntity-&gt;setUser($UserEntity);
+
+                $this-&gt;DbManager-&gt;persist($PostEntity);
+                $this-&gt;DbManager-&gt;flush();
+                return $this-&gt;redirect(&#39;post&#39;);
+            }
+        }catch(\Exception $e){
+            $error_message  = $e-&gt;getMessage();
+        }
+
+        return $this-&gt;view([&#39;error_message&#39; =&gt; $error_message]);
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function update($post_seq) : ResponseInterface
+    {
+        $error_message  = &#39;&#39;;
+        try
+        {
+            /**
+             * @var PostEntity $PostEntity
+             * @var UserRepository $UserRepository;
+             */
+            $post_title             = $this-&gt;Request-&gt;getPostParam(&#39;post_title&#39;);
+            $post_content           = $this-&gt;Request-&gt;getPostParam(&#39;post_content&#39;);
+            $UserRepository         = $this-&gt;DbManager-&gt;getRepository(UserEntity::class);
+            $UserEntity             = $UserRepository-&gt;find($this-&gt;UserToken-&gt;getUser()-&gt;getUserSeq());
+            $PostRepository         = $this-&gt;DbManager-&gt;getRepository(PostEntity::class);
+            $PostEntity             = $PostRepository-&gt;find($post_seq);
+
+            if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+                if(empty($post_title)){
+                    throw new \InvalidArgumentException(&#39;请输入文章标题。&#39;);
+                }
+
+                if(empty($post_content)){
+                    throw new \InvalidArgumentException(&#39;请输入文章内容。&#39;);
+                }
+
+                if($PostEntity-&gt;getUser()-&gt;getLoginName() != $this-&gt;UserToken-&gt;getUser()-&gt;getLoginName()){
+                    throw new \InvalidArgumentException(&#39;只能编辑自己发布的文章内容。&#39;);
+                }
+
+                $PostEntity-&gt;setPostTitle($post_title);
+                $PostEntity-&gt;setPostContent($post_content);
+                $PostEntity-&gt;setPostUpdateTime(time());
+
+                $this-&gt;DbManager-&gt;persist($PostEntity);
+                $this-&gt;DbManager-&gt;flush();
+                return $this-&gt;redirect(&#39;post&#39;);
+            }
+        }catch(\Exception $e){
+            $error_message  = $e-&gt;getMessage();
+        }
+
+        return $this-&gt;view([&#39;PostEntity&#39; =&gt; $PostEntity, &#39;error_message&#39; =&gt; $error_message]);
+    }
+
+    /**
+     *
+     * @return ResponseInterface
+     */
+    public function delete() : ResponseInterface
+    {
+        $post_seq               = $this-&gt;Request-&gt;getPostParam(&#39;post_seq&#39;);
+        $PostRepository         = $this-&gt;DbManager-&gt;getRepository(PostEntity::class);
+        $PostEntity             = $PostRepository-&gt;find($post_seq);
+
+        if($this-&gt;Request-&gt;getMethod() == &#39;POST&#39;){
+            if($PostEntity-&gt;getUser()-&gt;getLoginName() != $this-&gt;UserToken-&gt;getUser()-&gt;getLoginName()){
+                throw new \InvalidArgumentException(&#39;只能删除自己发布的文章内容。&#39;);
+            }
+            $this-&gt;DbManager-&gt;remove($PostEntity);
+            $this-&gt;DbManager-&gt;flush();
+            return $this-&gt;redirect(&#39;post&#39;);
+        }
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>创建视图文件<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>默认情况下在模板目录中查找与controller class:method对应的视图文件。</p>
+<p>./view/post/create.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">error_message</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;alert alert-danger&quot;</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">error_message</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">form</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">h1</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;h3 mb-3 font-weight-normal&quot;</span><span class="o">&gt;</span><span class="n">创建新文章</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;post_title&quot;</span><span class="o">&gt;</span><span class="n">标题</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;post_title&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;post_title&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入文章标题&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;post_content&quot;</span><span class="o">&gt;</span><span class="n">内容</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">textarea</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;post_content&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;post_content&quot;</span> <span class="n">rows</span><span class="o">=</span><span class="s2">&quot;20&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入文章内容&quot;</span><span class="o">&gt;&lt;/</span><span class="n">textarea</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-primary&quot;</span><span class="o">&gt;</span><span class="n">提交表单</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>./view/post/index.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;post_create&#39;) }}&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-link&quot;</span><span class="o">&gt;</span><span class="n">添加文章</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">table</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">thead</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="c1">#&lt;/th&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="n">标题</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="n">时间</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">th</span> <span class="n">scope</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="o">&gt;</span><span class="n">操作</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">thead</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">tbody</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">PostEntity</span> <span class="ow">in</span> <span class="n">PostEntitys</span> <span class="o">%</span><span class="p">}</span>
+                <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">th</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">loop</span><span class="o">.</span><span class="n">index</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">PostEntity</span><span class="o">.</span><span class="n">getPostTitle</span><span class="p">()</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">PostEntity</span><span class="o">.</span><span class="n">getPostUpdateTime</span><span class="p">()</span><span class="o">|</span><span class="n">date</span><span class="p">(</span><span class="s1">&#39;Y-m-d H:i:s&#39;</span><span class="p">)</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+                      <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;post_update&#39;, {post_seq: PostEntity.getPostSeq()}) }}&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-link&quot;</span><span class="o">&gt;</span><span class="n">编辑</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+                      <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;post_delete&#39;) }}&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+                        <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;hidden&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;post_seq&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{PostEntity.getPostSeq()}}&quot;</span> <span class="o">/&gt;</span>
+                        <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-link&quot;</span><span class="o">&gt;</span><span class="n">删除</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+                      <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+                  <span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+                <span class="o">&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+          <span class="o">&lt;/</span><span class="n">tbody</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>./view/post/update.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;_layout/default.html.tpl&#39;</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">error_message</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;alert alert-danger&quot;</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">error_message</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">form</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">h1</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;h3 mb-3 font-weight-normal&quot;</span><span class="o">&gt;</span><span class="n">编辑文章</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;post_title&quot;</span><span class="o">&gt;</span><span class="n">标题</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;post_title&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;post_title&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{PostEntity.getPostTitle()}}&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入文章标题&quot;</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;post_content&quot;</span><span class="o">&gt;</span><span class="n">内容</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">textarea</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;post_content&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;post_content&quot;</span> <span class="n">rows</span><span class="o">=</span><span class="s2">&quot;15&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;请输入文章内容&quot;</span><span class="o">&gt;</span><span class="p">{{</span><span class="n">PostEntity</span><span class="o">.</span><span class="n">getPostContent</span><span class="p">()}}</span><span class="o">&lt;/</span><span class="n">textarea</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;post_create_time&quot;</span><span class="o">&gt;</span><span class="n">创建时间</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control-plaintext&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{PostEntity.getPostCreateTime()|date(&#39;Y-m-d&#39;)}}&quot;</span> <span class="n">readonly</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">label</span> <span class="k">for</span><span class="o">=</span><span class="s2">&quot;post_update_time&quot;</span><span class="o">&gt;</span><span class="n">最后修改</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control-plaintext&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{PostEntity.getPostUpdateTime()|date(&#39;Y-m-d&#39;)}}&quot;</span> <span class="n">readonly</span><span class="o">&gt;</span>
+          <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-primary&quot;</span><span class="o">&gt;</span><span class="n">提交表单</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>将新添加的文章管理程序注册到路由服务<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>./config/router.php</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;?php
+return  [
+
+    ...
+
+    [&#39;id&#39; =&gt; &#39;post&#39;, &#39;path&#39; =&gt; &#39;/post&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Post:index&#39;],
+    [&#39;id&#39; =&gt; &#39;post_create&#39;, &#39;path&#39; =&gt; &#39;/post-create&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Post:create&#39;],
+    [&#39;id&#39; =&gt; &#39;post_update&#39;, &#39;path&#39; =&gt; &#39;/{post_seq}/post-update&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Post:update&#39;],
+    [&#39;id&#39; =&gt; &#39;post_delete&#39;, &#39;path&#39; =&gt; &#39;/post-delete&#39; , &#39;callback&#39; =&gt; &#39;asbamboo\\frameworkStandard\\controller\\Post:delete&#39;],
+
+    ...
+];
+</pre></div>
+</div>
+</div>
+<div class="section" id="url">
+<h2>将文章管理的入口url添加到公共模板文件中<a class="headerlink" href="#url" title="永久链接至标题">¶</a></h2>
+<p>./view/_include/top.html.tpl</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="o">&lt;</span><span class="n">nav</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar navbar-expand-lg navbar-light bg-light rounded&quot;</span><span class="o">&gt;</span>
+    <span class="o">...</span>
+
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;collapse navbar-collapse justify-content-md-center&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;navbarsExample10&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;navbar-nav&quot;</span><span class="o">&gt;</span>
+
+        <span class="o">...</span>
+
+        <span class="o">&lt;</span><span class="n">li</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-item {</span><span class="si">% i</span><span class="s2">f is_current(&#39;post&#39;) %}active{</span><span class="si">% e</span><span class="s2">ndif %}&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">a</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ path(&#39;post&#39;) }}&quot;</span><span class="o">&gt;</span><span class="n">文章管理</span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">is_current</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">)</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="o">&gt;</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">nav</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>好了，再访问一下看看吧，发现页面报错了:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">服务端无法处理您的请求</span>
+<span class="n">Call</span> <span class="n">to</span> <span class="n">undefined</span> <span class="n">method</span> <span class="n">asbamboo</span>\<span class="n">security</span>\<span class="n">user</span>\<span class="n">AnonymousUser</span><span class="p">::</span><span class="n">getUserSeq</span><span class="p">()</span>
+<span class="n">返回</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">Call</span> <span class="n">to</span> <span class="n">undefined</span> <span class="n">method</span> <span class="n">asbamboo</span>\<span class="n">security</span>\<span class="n">user</span>\<span class="n">AnonymousUser</span><span class="p">::</span><span class="n">getUserSeq</span><span class="p">()</span> <span class="ow">in</span> <span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">asbamboo</span><span class="o">-</span><span class="n">study</span><span class="o">/</span><span class="n">controller</span><span class="o">/</span><span class="n">Post</span><span class="o">.</span><span class="n">php</span><span class="p">:</span><span class="mi">49</span>
+<span class="n">Stack</span> <span class="n">trace</span><span class="p">:</span>
+<span class="c1">#0 [internal function]: asbamboo\frameworkStandard\controller\Post-&gt;index()</span>
+<span class="c1">#1 /www/asbamboo-study/vendor/asbamboo/router/MatchRequest.php(106): call_user_func_array(Array, Array)</span>
+<span class="c1">#2 /www/asbamboo-study/vendor/asbamboo/router/Router.php(97): asbamboo\router\MatchRequest-&gt;execute()</span>
+<span class="c1">#3 /www/asbamboo-study/vendor/asbamboo/framework/kernel/Http.php(40): asbamboo\router\Router-&gt;matchRequest(Object(asbamboo\http\ServerRequest))</span>
+<span class="c1">#4 /www/asbamboo-study/public/index.php(11): asbamboo\framework\kernel\Http-&gt;run(Object(asbamboo\frameworkStandard\AppKernel))</span>
+<span class="c1">#5 {main}</span>
+</pre></div>
+</div>
+<p>这时因为用户还没有登录，获取不了当前用户的user seq，暂时先这样等后来登录功能完成以后我们再试试。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="home.html" title="在主页显示文章的列表"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="user.html" title="创建用户管理的http处理程序"
+             >上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">asbamboo php framework  文档</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >asbamboo/framwork简介</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, 李春寅 &lt;licy2013@aliyun.com&gt;.
+      由 <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7 创建。
+    </div>
+  </body>
+</html>
