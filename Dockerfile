@@ -1,10 +1,10 @@
-FROM asbamboo/nginx:1.0.0
+FROM nginx
 
-WORKDIR /html
+WORKDIR /srv/asbamboo/docs
 
-ADD ./_build /html/_build
+ADD ./_build /srv/asbamboo/docs/web
 
-COPY nginx.conf /html/asbamboo.nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
