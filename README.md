@@ -21,4 +21,5 @@
 服务器运行
 ==========================================================
 # docker build -t asbamboo/docs .
-# docker run -d -v /www/docs/_build:/html/_build -p80:80 asbamboo/docs
+# docker run -d -v /www/docs/_build:/srv/asbamboo/docs/web -p80:80 --name=asbamboo_docs asbamboo/docs
+# 通过浏览器 访问http://127.0.0.1
